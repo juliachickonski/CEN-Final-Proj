@@ -157,7 +157,7 @@ void game(string word) {
     }
 }
 
-void hangman() {
+void hangman(sf::RenderWindow &window) {
     int choice; // user difficulty choice
     string word;
     cout << "Welcome to Hangman! \nPlease select a Difficulty Level: \n[1] Easy "

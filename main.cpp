@@ -1,13 +1,13 @@
 #include <SFML/Graphics.hpp>
-#include "menu.h"
-#include "hangman.h"
+#include "Menu.h"
+#include "Hangman.h"
 #include "breakout_defs.h"
 #include<iostream>
 using namespace std;
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode(600, 600), "SFML WORKING");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML WORKING");
 
     Menu menu(window.getSize().x, window.getSize().y);
 
@@ -34,7 +34,7 @@ int main() {
                                     breakout(window);
                                     break;
                                 case 1:
-                                    hangman();
+                                    hangman(window);
                                     break;
                                 case 2:
                                     window.close();

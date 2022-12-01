@@ -1,11 +1,15 @@
-#include "menu.h"
+#include "Menu.h"
 
 using namespace std;
 sf::Font font;
 Menu::Menu(float width, float height) {
-    if(!font.loadFromFile("../arial.ttf"))
+    //handle filetype structures for mac & windows
+    if(!font.loadFromFile("../arial.ttf")) //windows
     {
-        //error
+        if(!font.loadFromFile("arial.ttf")) //mac
+        {
+
+        }
     }
     //first menu item
     menu[0].setFont(font);
