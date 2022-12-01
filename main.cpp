@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML WORKING");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML Working");
 
     Menu menu(window.getSize().x, window.getSize().y);
 

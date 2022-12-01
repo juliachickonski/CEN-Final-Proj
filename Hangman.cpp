@@ -1,4 +1,5 @@
 #include "Hangman.h"
+#include "HangmanMenu.h"
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
