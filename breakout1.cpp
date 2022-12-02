@@ -1,7 +1,7 @@
 /* --------------------------------------------------------
  *    File: breakout.cpp
  *  Author: Tyler MacPhee
- *   Class: CEN3031, Fall 2022
+ *   Class: CEN 3031, Fall 2022
  * Purpose: breakout game code
  * -------------------------------------------------------- */
 #include <iostream>
