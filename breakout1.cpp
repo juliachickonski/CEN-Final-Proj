@@ -3,6 +3,9 @@
  *  Author: Tyler MacPhee
  *   Class: CEN 3031, Fall 2022
  * Purpose: breakout game code
+ * Audit:
+ * 12-01-22 || Fixed paddle & block collision logic
+ * 12-01-22 || Completed issue #1
  * -------------------------------------------------------- */
 #include <iostream>
 #include <cmath>
