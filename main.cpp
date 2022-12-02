@@ -1,13 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include "Menu.h"
 #include "Hangman.h"
+#include "HangmanMenu.h"
 #include "breakout_defs.h"
 #include<iostream>
 using namespace std;
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML Working");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Minigames");
 
     Menu menu(window.getSize().x, window.getSize().y);
 

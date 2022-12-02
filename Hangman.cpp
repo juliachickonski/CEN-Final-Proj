@@ -161,43 +161,53 @@ void menu(sf::RenderWindow &window) {
 }*/
 
 //Main game
-    void hangman(sf::RenderWindow &window) {
-    window.clear(BACKGROUND_COLOR);
-    window.display();
+void hangman(sf::RenderWindow &window) {
+    window.clear();
     HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
-    //menu(window);
+    HangmanMenu.draw(window);
+    window.display();
 
-    //while (window.isOpen()) { working on this
-     //   sf::Event event;
+    string word;
+    while (window.isOpen()) {
+        sf::Event event;
 
-        int choice; // user difficulty choice
-        string word;
-        cout << "Welcome to Hangman! \nPlease select a Difficulty Level: \n[1] Easy "
-                "\n[2] Medium \n[3] Hard\n\n";
-        cin >> choice;
+        while (window.pollEvent(event))
+        {
+            switch (event.type)
+            {
+                case sf::Event::KeyReleased:
+                    switch (event.key.code)
+                    {
+                        case sf::Keyboard::Up:
+                            HangmanMenu.moveUp();
+                            break;
+                        case sf::Keyboard::Down:
+                            HangmanMenu.moveDown();
+                            break;
+                        case sf::Keyboard::Return:
+                            switch (HangmanMenu.getPressedItem())
+                            {
+                                case 0:
+                                    word = easy();
+                                    game(word);
+                                case 1:
+                                    word = medium();
+                                    game(word);
+                                    break;
+                                case 2:
+                                    word = hard();
+                                    game(word);
+                                    break;
 
-        switch (choice) {
-            case 1: // easy
-                word = easy();
-                cout << "Hint: Animals\n"
-                     << word << "\n\n"; // the word is only shown for testing purposes
-
-                game(word);
-                break;
-
-            case 2: // medium
-                word = medium();
-                cout << "Hint: Famous Game Villains\n" << word << "\n\n";
-                game(word);
-                break;
-
-            case 3: // hard
-                word = hard();
-                cout << word << "\n\n";
-                game(word);
-                break;
-            default:
-                break;
+                            }
+                            break;
+                    }
+                    break;
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+            }
         }
     }
+}
 //}
