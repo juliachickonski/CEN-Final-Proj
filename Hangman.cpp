@@ -1,6 +1,6 @@
 #include "Hangman.h"
 #include "HangmanMenu.h"
-#include "main.cpp"
+//#include "main.cpp"
 //#include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -13,12 +13,16 @@ using std::cout;
 using std::endl;
 using std::string;
 
+sf::Font textfont;
+
 void returnArray(string arr[], int length) {
     for (int i = 0; i < length; i++) {
         cout << arr[i] << " ";
     }
     cout << endl;
 }
+
+
 
 string easy() {
     // hint animals
@@ -102,7 +106,80 @@ string hard() {
     return word[0];
 }
 
-void game(string word) {
+void game(string word,sf::RenderWindow &window) {
+    if(!textfont.loadFromFile("../arial.ttf")) //windows
+    {
+        if(!textfont.loadFromFile("arial.ttf")) //mac
+        {
+
+        }
+    }
+
+    //word bank shapes
+    sf::RectangleShape wordBank(sf::Vector2f(300,600));
+    wordBank.setFillColor(sf::Color(0, 0, 0));
+    wordBank.setOutlineThickness(25);
+    wordBank.setOutlineColor(sf::Color(255, 255, 255));
+    wordBank.setPosition(1500, 225);
+
+    sf::Text bankText;
+    bankText.setString("Letter Graveyard");
+    bankText.setFont(textfont);
+    bankText.setCharacterSize(40);
+    bankText.setStyle(sf::Text::Bold);
+    bankText.setPosition(1493,155);
+
+
+    //hangman holder shape
+    sf::RectangleShape baseLine(sf::Vector2f(300,5));
+    baseLine.setPosition(735,590);
+    sf::RectangleShape standLine(sf::Vector2f(400,5));
+    standLine.rotate(90);
+    standLine.setPosition(885,190);
+    sf::RectangleShape hookLine(sf::Vector2f(150,5));
+    hookLine.setPosition(735,190);
+    sf::RectangleShape hookLine2(sf::Vector2f(50,5));
+    hookLine2.rotate(90);
+    hookLine2.setPosition(735,190);
+
+    //draw human
+    sf::CircleShape head(50);
+    head.setPointCount(100);
+    head.setPosition(683,240);
+    sf::RectangleShape torso(sf::Vector2f(125,5));
+    torso.rotate(90);
+    torso.setPosition(735,340);
+    sf::RectangleShape lLeg(sf::Vector2f(75,5));
+    lLeg.rotate(135);
+    lLeg.setPosition(735,465);
+    sf::RectangleShape rLeg(sf::Vector2f(75,5));
+    rLeg.rotate(45);
+    rLeg.setPosition(736,464);
+
+    sf::RectangleShape lArm(sf::Vector2f(75,5));
+    lArm.rotate(-135);
+    lArm.setPosition(730,391);
+    sf::RectangleShape rArm(sf::Vector2f(75,5));
+    rArm.rotate(-45);
+    rArm.setPosition(732,388);
+
+    window.clear();
+    window.draw(head);
+    window.draw(torso);
+    window.draw(lLeg);
+    window.draw(rLeg);
+    window.draw(lArm);
+    window.draw(rArm);
+
+    //window.clear();
+    window.draw(wordBank);
+    window.draw(bankText);
+    window.draw(baseLine);
+    window.draw(standLine);
+    window.draw(hookLine);
+    window.draw(hookLine2);
+    window.display();
+
     int len = word.length();
     char wordArray[len];
     strcpy(wordArray, word.c_str());
@@ -181,14 +258,17 @@ void hangman(sf::RenderWindow &window) {
                             {
                                 case 0:
                                     word = easy();
-                                    game(word);
+                                    cout << word;
+                                    game(word,window);
                                 case 1:
                                     word = medium();
-                                    game(word);
+                                    cout << word;
+                                    game(word,window);
                                     break;
                                 case 2:
                                     word = hard();
-                                    game(word);
+                                    cout << word;
+                                    game(word,window);
                                     break;
                                 case 3:
                                     window.close();
