@@ -1,58 +1,51 @@
 /* --------------------------------------------------------
  *    File: breakout_defs.h
  *  Author: Tyler MacPhee
- *   Class: COP 2001, Spring 2022, CRN #10410
+ *   Class: CEN 3031, Fall 2022
  * Purpose: Stores constants & structs for the breakout game
- * Audit:
- * 4.26.22 - Updated defs for new consts
- * 5.1.22 - TM updated defs for new bricks structure
  * -------------------------------------------------------- */
-
 #include <SFML/Graphics.hpp>
 
-#ifndef COLLISION_BREAKOUT_DEFS_H
-#define COLLISION_BREAKOUT_DEFS_H
+#ifndef BREAKOUTPADDLE_BREAKOUT_DEFS_H
+#define BREAKOUTPADDLE_BREAKOUT_DEFS_H
 // Global Constants
 // --------------------------------------------------------
+
 // window properties
-const int WINDOW_WIDTH = 640;
-const int WINDOW_HEIGHT = 480;
-const sf::Color WINDOW_COLOR = sf::Color::White;
+const int WINDOW_WIDTH = 1920;
+const int WINDOW_HEIGHT = 1080;
+const sf::Color WINDOW_COLOR = sf::Color::Black;
+
 // drawing properties
 const float FRAME_RATE = (1.0/30.0) * 1000.0;       // FPS in ms
 const sf::Color BALL_COLOR = sf::Color::Blue;
-const float BALL_RADIUS = 10.0;
-// These are just for fun
-// speed that the can accelerate at to span window in
-// n-seconds (in ms) broken up for each frame
-const float SPEED_TIME = (3.0 * 1000.0) * 30.0;     //
-const float BALL_SPEED_X = BALL_RADIUS * 10.0 / 1000.0;    // speed horizontally
-const float BALL_SPEED_Y = BALL_RADIUS * 8.5 / 1000.0;   // span vertically
+const float WALL_THICKNESS = 2.0;
+const sf::Color WALL_COLOR = sf::Color::Green;
 
-//border properties
-const float WALL_THICKNESS = 5.0;
-const sf::Color WALL_COLOR = sf::Color::Red;
+// ball properties
+const float BALL_RADIUS = 20.0;
+const float BALL_SPEED_X = BALL_RADIUS * 10.0 / 1000.0;
+const float BALL_SPEED_Y = BALL_RADIUS * 8.5 / 1000.0;
 
-//paddle properties
-const float PADDLE_WIDTH = 80.0;
+// paddle constants
+const float PADDLE_WIDTH = 160.0;
 const float PADDLE_THICKNESS = 10.0;
-const sf::Color PADDLE_COLOR = sf::Color::Red;
-const float PADDLE_SPEED = PADDLE_WIDTH / 10.0 / 1000.0; //paddle speed left/right
+const sf::Color PADDLE_COLOR = sf::Color::Magenta;
+const float PADDLE_SPEED = PADDLE_WIDTH / 10.0 / 1000.0;
 
-//brick properties
-const int BRICK_ROWS = 8;                                               //rows of bricks in rack
-const int BRICK_COLUMNS = 14;                                           //number of bricks in row
-const float BRICK_WIDTH = WINDOW_WIDTH / BRICK_COLUMNS;                 //width of brick
-const float BRICK_HEIGHT = PADDLE_THICKNESS * 2;                        //height of 1 brick (2x paddle)
-const float BRICKS_HEIGHT = BRICK_ROWS * BRICK_HEIGHT;                  //height of rack of bricks
-const float BRICKS_TOP = WINDOW_HEIGHT / 2.0 - BRICKS_HEIGHT * 0.75;    //top of rack (shift up 3/4 from center)
-const float BRICKS_LEFT = WALL_THICKNESS;                               //left of first brick in each row
-const float FIRST_BRICK = BRICKS_TOP + (BRICK_ROWS - 1) * BRICK_HEIGHT; //top of lowest brick in each rack
+// --- brick constants ---
+const int BRICK_ROWS = 8;                                               // rows of bricks in rack
+const int BRICK_COLUMNS = 14;                                           // number of bricks in row
+const float BRICK_WIDTH = WINDOW_WIDTH / BRICK_COLUMNS;                 // width of 1 brick
+const float BRICK_HEIGHT = PADDLE_THICKNESS * 2;                        // height of 1 brick (2 x paddle)
+const float BRICKS_HEIGHT = BRICK_ROWS * BRICK_HEIGHT;                  // height of rack of bricks
+const float BRICKS_TOP = WINDOW_HEIGHT / 2.0 - BRICKS_HEIGHT * 0.75;    // top of the rack (shift up 3/4 from center)
+const float BRICKS_LEFT = WALL_THICKNESS;                               // left of first brick in each row
+const float FIRST_BRICK = BRICKS_TOP + (BRICK_ROWS - 1) * BRICK_HEIGHT; // top of lowest brick in rack
+
 
 // Type definitions
 // --------------------------------------------------------
-
-// direction properties
 enum Direction {
     Exit = -1,
     None,
@@ -63,7 +56,6 @@ enum Direction {
     Start
 };
 
-// ball properties
 struct Ball {
     float radius;
     float coordinateX;
@@ -73,7 +65,6 @@ struct Ball {
     sf::Color color;
 };
 
-//border wall properties
 struct Block {
     float left;
     float top;
@@ -83,11 +74,10 @@ struct Block {
     sf::RectangleShape rectangle;
 };
 
-//moving block properties
 struct MovingBlock {
     Block block;
-    float block_velocityX;
-    float block_velocityY;
+    float velocityX;
+    float velocityY;
 };
 
 struct Brick {
@@ -97,14 +87,13 @@ struct Brick {
     float speedAdjust;
 };
 
-//border walls
 struct Borders {
-    Block left_wall;
-    Block right_wall;
-    Block top_wall;
-    Block bottom_wall;
+    Block leftWall;
+    Block topWall;
+    Block rightWall;
+    Block bottomWall;
 };
 
 void breakout(sf::RenderWindow &window);
 
-#endif //COLLISION_BREAKOUT_DEFS_H
+#endif //BREAKOUTPADDLE_BREAKOUT_DEFS_H
