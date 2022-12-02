@@ -154,11 +154,6 @@ void game(string word) {
         }
     }
 }
-/*
-void menu(sf::RenderWindow &window) {
-    window.clear(BACKGROUND_COLOR);
-    window.display();
-}*/
 
 //Main game
 void hangman(sf::RenderWindow &window) {
@@ -170,7 +165,6 @@ void hangman(sf::RenderWindow &window) {
     string word;
     while (window.isOpen()) {
         sf::Event event;
-
         while (window.pollEvent(event))
         {
             switch (event.type)
@@ -198,7 +192,6 @@ void hangman(sf::RenderWindow &window) {
                                     word = hard();
                                     game(word);
                                     break;
-
                             }
                             break;
                     }
@@ -210,4 +203,3 @@ void hangman(sf::RenderWindow &window) {
         }
     }
 }
-//}
