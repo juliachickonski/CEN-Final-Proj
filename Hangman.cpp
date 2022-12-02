@@ -159,6 +159,10 @@ void game(string word) {
 }
 
 void hangman(sf::RenderWindow &window) {
+//    for (int i=0; i<MAX_MENU_ITEMS; i++) {
+  //      window.draw(menu[i]);
+ //   }
+
     int choice; // user difficulty choice
     string word;
     cout << "Welcome to Hangman! \nPlease select a Difficulty Level: \n[1] Easy "
