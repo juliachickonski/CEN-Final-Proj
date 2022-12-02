@@ -1,5 +1,6 @@
 #include "Hangman.h"
 #include "HangmanMenu.h"
+#include "main.cpp"
 //#include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -157,10 +158,7 @@ void game(string word) {
 
 //Main game
 void hangman(sf::RenderWindow &window) {
-    window.clear();
     HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
-    HangmanMenu.draw(window);
-    window.display();
 
     string word;
     while (window.isOpen()) {
@@ -192,6 +190,9 @@ void hangman(sf::RenderWindow &window) {
                                     word = hard();
                                     game(word);
                                     break;
+                                case 3:
+                                    window.close();
+                                    break;
                             }
                             break;
                     }
@@ -201,5 +202,10 @@ void hangman(sf::RenderWindow &window) {
                     break;
             }
         }
+        window.clear();
+
+        HangmanMenu.draw(window);
+
+        window.display();
     }
 }

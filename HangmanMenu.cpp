@@ -31,8 +31,8 @@ HangmanMenu::HangmanMenu(float width, float height) {
     //quit Hangman menu option
     menu[3].setFont(font);
     menu[3].setFillColor(sf::Color::White);
-    menu[3].setString("Hard--No Hints");
-    menu[3].setPosition(sf::Vector2f(width /2,  height / (MAX_MENU_ITEMS + 1) * 3 ));
+    menu[3].setString("Back");
+    menu[3].setPosition(sf::Vector2f(width /2,  height / (MAX_MENU_ITEMS + 1) * 4 ));
 
     selectedItemIndex = 0;
 }
