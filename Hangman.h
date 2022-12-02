@@ -4,5 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 void hangman(sf::RenderWindow &window);
+const sf::Color BACKGROUND_COLOR = sf::Color::White;
 
 #endif //CEN_VG_PROJECT_HANGMAN_H

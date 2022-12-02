@@ -1,6 +1,6 @@
 #include "Hangman.h"
 #include "HangmanMenu.h"
-#include <cmath>
+//#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -45,6 +45,9 @@ string easy() {
         case 5:
             return word[4];
             break;
+        default:
+            cout<< "Sorry, that is not a valid choice.";
+            break;
     }
     return word[0];
 }
@@ -60,18 +63,15 @@ string medium() {
     switch (rand_num) {
         case 1:
             return word[0];
-            break;
         case 2:
             return word[1];
-            break;
         case 3:
             return word[2];
-            break;
         case 4:
             return word[3];
-            break;
         case 5:
             return word[4];
+        default:
             break;
     }
     return word[0];
@@ -87,18 +87,15 @@ string hard() {
     switch (rand_num) {
         case 1:
             return word[0];
-            break;
         case 2:
             return word[1];
-            break;
         case 3:
             return word[2];
-            break;
         case 4:
             return word[3];
-            break;
         case 5:
             return word[4];
+        default:
             break;
     }
     return word[0];
@@ -157,37 +154,50 @@ void game(string word) {
         }
     }
 }
+/*
+void menu(sf::RenderWindow &window) {
+    window.clear(BACKGROUND_COLOR);
+    window.display();
+}*/
 
-void hangman(sf::RenderWindow &window) {
-//    for (int i=0; i<MAX_MENU_ITEMS; i++) {
-  //      window.draw(menu[i]);
- //   }
+//Main game
+    void hangman(sf::RenderWindow &window) {
+    window.clear(BACKGROUND_COLOR);
+    window.display();
+    HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
+    //menu(window);
 
-    int choice; // user difficulty choice
-    string word;
-    cout << "Welcome to Hangman! \nPlease select a Difficulty Level: \n[1] Easy "
-            "\n[2] Medium \n[3] Hard\n\n";
-    cin >> choice;
+    //while (window.isOpen()) { working on this
+     //   sf::Event event;
 
-    switch (choice) {
-        case 1: // easy
-            word = easy();
-            cout << "Hint: Animals\n"
-                 << word << "\n\n"; // the word is only shown for testing purposes
+        int choice; // user difficulty choice
+        string word;
+        cout << "Welcome to Hangman! \nPlease select a Difficulty Level: \n[1] Easy "
+                "\n[2] Medium \n[3] Hard\n\n";
+        cin >> choice;
 
-            game(word);
-            break;
+        switch (choice) {
+            case 1: // easy
+                word = easy();
+                cout << "Hint: Animals\n"
+                     << word << "\n\n"; // the word is only shown for testing purposes
 
-        case 2: // medium
-            word = medium();
-            cout << "Hint: Famous Game Villains\n" << word << "\n\n";
-            game(word);
-            break;
+                game(word);
+                break;
 
-        case 3: // hard
-            word = hard();
-            cout << word << "\n\n";
-            game(word);
-            break;
+            case 2: // medium
+                word = medium();
+                cout << "Hint: Famous Game Villains\n" << word << "\n\n";
+                game(word);
+                break;
+
+            case 3: // hard
+                word = hard();
+                cout << word << "\n\n";
+                game(word);
+                break;
+            default:
+                break;
+        }
     }
-}
+//}

@@ -10,7 +10,7 @@
 
 #define MAX_MENU_ITEMS 4
 
-class HangmanMenu {
+class HangmanMenu{
 public:
     HangmanMenu(float width, float height);
     ~HangmanMenu();
