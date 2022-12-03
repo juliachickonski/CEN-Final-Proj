@@ -1,9 +1,12 @@
-#ifndef CEN_VG_PROJECT_HANGMAN_H
-#define CEN_VG_PROJECT_HANGMAN_H
+#ifndef COP_FINAL_HANGMAN_H
+#define COP_FINAL_HANGMAN_H
 
+#pragma once
 #include <SFML/Graphics.hpp>
 
+//sf::Font textFont;
 void hangman(sf::RenderWindow &window);
 const sf::Color BACKGROUND_COLOR = sf::Color::White;
 
-#endif //CEN_VG_PROJECT_HANGMAN_H
+
+#endif //COP_FINAL_HANGMAN_H

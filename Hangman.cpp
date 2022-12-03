@@ -13,7 +13,85 @@ using std::cout;
 using std::endl;
 using std::string;
 
-sf::Font textfont;
+sf::Font textFont;
+
+void render(sf::RenderWindow &window){
+    if(!textFont.loadFromFile("../arial.ttf")) //windows
+    {
+        if(!textFont.loadFromFile("arial.ttf")) //mac
+        {
+        }
+    }
+
+    sf::RectangleShape wordBank(sf::Vector2f(300,600));
+    wordBank.setFillColor(sf::Color(0, 0, 0));
+    wordBank.setOutlineThickness(25);
+    wordBank.setOutlineColor(sf::Color(255, 255, 255));
+    wordBank.setPosition(1500, 225);
+
+    sf::Text bankText;
+    bankText.setString("Letter Graveyard");
+    bankText.setFont(textFont);
+    bankText.setCharacterSize(40);
+    bankText.setStyle(sf::Text::Bold);
+    bankText.setPosition(1493,155);
+
+
+    //hangman holder shape
+    sf::RectangleShape baseLine(sf::Vector2f(300,5));
+    baseLine.setPosition(735,590);
+    sf::RectangleShape standLine(sf::Vector2f(400,5));
+    standLine.rotate(90);
+    standLine.setPosition(885,190);
+    sf::RectangleShape hookLine(sf::Vector2f(150,5));
+    hookLine.setPosition(735,190);
+    sf::RectangleShape hookLine2(sf::Vector2f(50,5));
+    hookLine2.rotate(90);
+    hookLine2.setPosition(735,190);
+
+    //draw human
+    //head
+    sf::CircleShape head(50);
+    head.setPointCount(100);
+    head.setPosition(683,240);
+    //torso
+    sf::RectangleShape torso(sf::Vector2f(125,5));
+    torso.rotate(90);
+    torso.setPosition(735,340);
+    //left leg
+    sf::RectangleShape lLeg(sf::Vector2f(75,5));
+    lLeg.rotate(135);
+    lLeg.setPosition(735,465);
+    //right leg
+    sf::RectangleShape rLeg(sf::Vector2f(75,5));
+    rLeg.rotate(45);
+    rLeg.setPosition(736,464);
+    //left arm
+    sf::RectangleShape lArm(sf::Vector2f(75,5));
+    lArm.rotate(-135);
+    lArm.setPosition(730,391);
+    //right arm
+    sf::RectangleShape rArm(sf::Vector2f(75,5));
+    rArm.rotate(-45);
+    rArm.setPosition(732,388);
+
+    window.clear();
+
+    window.draw(wordBank);
+    window.draw(bankText);
+    window.draw(baseLine);
+    window.draw(standLine);
+    window.draw(hookLine);
+    window.draw(hookLine2);
+
+    window.draw(head);
+    window.draw(torso);
+    window.draw(lLeg);
+    window.draw(rLeg);
+    window.draw(lArm);
+    window.draw(rArm);
+    window.display();
+}
 
 void returnArray(string arr[], int length) {
     for (int i = 0; i < length; i++) {
@@ -22,12 +100,10 @@ void returnArray(string arr[], int length) {
     cout << endl;
 }
 
-
-
 string easy() {
     // hint animals
     // maybe one letter already revealed
-    string word[5] = {"bear", "hippo", "rabbit", "monkey", "horse"};
+    string word[5] = {"bear", "hippo", "rabbit", "monkey", "horse"}; //4  5  6  6  5
 
     // found random number generator
     // https://java2blog.com/random-number-between-1-and-10-cpp/
@@ -60,7 +136,7 @@ string easy() {
 string medium() {
     // hint but no free letter
     // Gamer Villains
-    string word[5] = {"bowzer", "glados", "gannon", "ridley", "robotnik"};
+    string word[5] = {"bowzer", "glados", "gannon", "ridley", "robotnik"}; //6  6  6  6  8
 
     srand(time(0));
     int rand_num = (rand() % 5) + 1;
@@ -84,7 +160,7 @@ string medium() {
 
 string hard() {
     // no hints and random words
-    string word[5] = {"jazz", "abrupt", "match", "rythm", "buzzing"};
+    string word[5] = {"jazz", "abrupt", "match", "rythm", "buzzing"};// 4  6  5  5  7
 
     srand(time(0));
     int rand_num = (rand() % 5) + 1;
@@ -106,84 +182,45 @@ string hard() {
     return word[0];
 }
 
-void game(string word,sf::RenderWindow &window) {
-    if(!textfont.loadFromFile("../arial.ttf")) //windows
+int enterLetter(sf::RenderWindow &window){
+    if(!textFont.loadFromFile("../arial.ttf")) //windows
     {
-        if(!textfont.loadFromFile("arial.ttf")) //mac
+        if(!textFont.loadFromFile("arial.ttf")) //mac
         {
 
         }
     }
 
-    //word bank shapes
-    sf::RectangleShape wordBank(sf::Vector2f(300,600));
-    wordBank.setFillColor(sf::Color(0, 0, 0));
-    wordBank.setOutlineThickness(25);
-    wordBank.setOutlineColor(sf::Color(255, 255, 255));
-    wordBank.setPosition(1500, 225);
+    sf::Event event;
+    sf::String playerInput;
+    sf::Text playerText;
+    playerText.setPosition(60,300);
+    playerText.setColor(sf::Color::Red);
 
-    sf::Text bankText;
-    bankText.setString("Letter Graveyard");
-    bankText.setFont(textfont);
-    bankText.setCharacterSize(40);
-    bankText.setStyle(sf::Text::Bold);
-    bankText.setPosition(1493,155);
+    while (window.isOpen())
+    {
+        while(window.pollEvent(event))
+        {
+            if (event.type == sf::Event::TextEntered)
+            {
+                if(event.text.unicode < 128)
+                {
+                    playerInput +=event.text.unicode;
+                    playerText.setString(playerInput);
+                }
+            }
+            window.draw(playerText);
+        }
+        window.display();
+    }
+    return 0;
+}
 
-
-    //hangman holder shape
-    sf::RectangleShape baseLine(sf::Vector2f(300,5));
-    baseLine.setPosition(735,590);
-    sf::RectangleShape standLine(sf::Vector2f(400,5));
-    standLine.rotate(90);
-    standLine.setPosition(885,190);
-    sf::RectangleShape hookLine(sf::Vector2f(150,5));
-    hookLine.setPosition(735,190);
-    sf::RectangleShape hookLine2(sf::Vector2f(50,5));
-    hookLine2.rotate(90);
-    hookLine2.setPosition(735,190);
-
-    //draw human
-    sf::CircleShape head(50);
-    head.setPointCount(100);
-    head.setPosition(683,240);
-    sf::RectangleShape torso(sf::Vector2f(125,5));
-    torso.rotate(90);
-    torso.setPosition(735,340);
-    sf::RectangleShape lLeg(sf::Vector2f(75,5));
-    lLeg.rotate(135);
-    lLeg.setPosition(735,465);
-    sf::RectangleShape rLeg(sf::Vector2f(75,5));
-    rLeg.rotate(45);
-    rLeg.setPosition(736,464);
-
-    sf::RectangleShape lArm(sf::Vector2f(75,5));
-    lArm.rotate(-135);
-    lArm.setPosition(730,391);
-    sf::RectangleShape rArm(sf::Vector2f(75,5));
-    rArm.rotate(-45);
-    rArm.setPosition(732,388);
-
-    window.clear();
-    window.draw(head);
-    window.draw(torso);
-    window.draw(lLeg);
-    window.draw(rLeg);
-    window.draw(lArm);
-    window.draw(rArm);
-
-    //window.clear();
-    window.draw(wordBank);
-    window.draw(bankText);
-    window.draw(baseLine);
-    window.draw(standLine);
-    window.draw(hookLine);
-    window.draw(hookLine2);
-    window.display();
-
-    int len = word.length();
-    char wordArray[len];
+void game(string word,sf::RenderWindow &window) {
+    int len = word.length(); //determines length of word to guess
+    char wordArray[len]; //array to hold the word to guess
     strcpy(wordArray, word.c_str());
-    char userArray[len];
+    char userArray[len]; //array to hold users guesses
 
     for (int i = 0; i < len; i++) {
         userArray[i] = '_';
@@ -191,14 +228,19 @@ void game(string word,sf::RenderWindow &window) {
 
     int userLife = 9; // user life count before stick figure
     char userChoice;
-    for (int i = 0; i < len; i++) {
+
+    for (int i = 0; i < len; i++) { //puts out number of lines/letter in console
         cout << " ___ ";
     }
+
     int wordCounter = 0;
     int livesCounter = 0;
     int lastCount = 0;
     cout << "number of lives: " << userLife << endl;
     while (userLife > 0) {
+        //word bank shapes
+        render(window);
+
         cout << "letter choice: ";
         cin >> userChoice;
         cout << endl;
@@ -226,14 +268,24 @@ void game(string word,sf::RenderWindow &window) {
         }
         lastCount = livesCounter;
         cout << "number of lives: " << userLife << endl;
+
         if (userLife == 0) {
+            window.clear();
+            sf::Text loseTxt;
+            loseTxt.setString("YOU LOOSE");
+            loseTxt.setFont(textFont);
+            loseTxt.setCharacterSize(75);
+            loseTxt.setStyle(sf::Text::Bold | sf::Text::Underlined);
+            loseTxt.setFillColor(sf::Color(178,34,34));
+            loseTxt.setPosition(960,540);
+
             cout << "You Loose :(\n\n";
             return;
         }
     }
 }
 
-//Main game
+//game difficulty choice
 void hangman(sf::RenderWindow &window) {
     HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
 
@@ -258,16 +310,13 @@ void hangman(sf::RenderWindow &window) {
                             {
                                 case 0:
                                     word = easy();
-                                    cout << word;
                                     game(word,window);
                                 case 1:
                                     word = medium();
-                                    cout << word;
                                     game(word,window);
                                     break;
                                 case 2:
                                     word = hard();
-                                    cout << word;
                                     game(word,window);
                                     break;
                                 case 3:

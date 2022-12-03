@@ -8,7 +8,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#define MAX_MENU_ITEMS 4
+#define MAXIMUM_MENU_ITEMS 4
 
 class HangmanMenu{
 public:
@@ -23,7 +23,7 @@ public:
 private:
     int selectedItemIndex;
     sf::Font font;
-    sf::Text menu[MAX_MENU_ITEMS];
+    sf::Text menu[MAXIMUM_MENU_ITEMS];
 
 };
 
