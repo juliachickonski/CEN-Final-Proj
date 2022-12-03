@@ -6,7 +6,7 @@
 #define CEN_VG_PROJECT_MENU_H
 
 #pragma once
-#include "libs/include/SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 
 #define MAX_MENU_ITEMS 3
 
