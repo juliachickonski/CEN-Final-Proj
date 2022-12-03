@@ -15,20 +15,21 @@ using std::string;
 
 sf::Font textFont;
 
-void render(sf::RenderWindow &window){
+void render(sf::RenderWindow &window, int userLives , string word){
     if(!textFont.loadFromFile("../arial.ttf")) //windows
     {
         if(!textFont.loadFromFile("arial.ttf")) //mac
         {
         }
     }
-
+    //word bank box
     sf::RectangleShape wordBank(sf::Vector2f(300,600));
     wordBank.setFillColor(sf::Color(0, 0, 0));
     wordBank.setOutlineThickness(25);
     wordBank.setOutlineColor(sf::Color(255, 255, 255));
     wordBank.setPosition(1500, 225);
 
+    //word bank title
     sf::Text bankText;
     bankText.setString("Letter Graveyard");
     bankText.setFont(textFont);
@@ -75,30 +76,198 @@ void render(sf::RenderWindow &window){
     rArm.rotate(-45);
     rArm.setPosition(732,388);
 
-    window.clear();
+    sf::Text winText;
+    winText.setString("\t\tYou Earned a Point! \nPress enter to continue.");
+    winText.setFont(textFont);
+    winText.setCharacterSize(50);
+    winText.setStyle(sf::Text::Bold);
+    winText.setPosition(750,25);
 
-    window.draw(wordBank);
-    window.draw(bankText);
-    window.draw(baseLine);
-    window.draw(standLine);
-    window.draw(hookLine);
-    window.draw(hookLine2);
+    sf::Text loseText;
+    loseText.setString("\t\t\tYou Loose :( \nPress enter to return to Menu.");
+    loseText.setFont(textFont);
+    loseText.setFillColor(sf::Color(255,66,0));
+    loseText.setCharacterSize(50);
+    loseText.setStyle(sf::Text::Bold);
+    loseText.setPosition(625,25);
 
-    window.draw(head);
-    window.draw(torso);
-    window.draw(lLeg);
-    window.draw(rLeg);
-    window.draw(lArm);
-    window.draw(rArm);
-    window.display();
+    sf::Text gameWord;
+    gameWord.setString(word);
+    gameWord.setFont(textFont);
+    gameWord.setCharacterSize(40);
+    gameWord.setStyle(sf::Text::Bold);
+    gameWord.setPosition(12,12);
+
+    switch(userLives){
+        case 7:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.display();
+            break;
+
+        case 6:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+
+            window.display();
+            break;
+
+        case 5:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+            window.draw(torso);
+
+            window.display();
+            break;
+
+        case 4:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+            window.draw(torso);
+            window.draw(lLeg);
+
+            window.display();
+            break;
+
+        case 3:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+            window.draw(torso);
+            window.draw(lLeg);
+            window.draw(rLeg);
+
+            window.display();
+            break;
+
+        case 2:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+            window.draw(torso);
+            window.draw(lLeg);
+            window.draw(rLeg);
+            window.draw(lArm);
+
+            window.display();
+            break;
+
+        case 1:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+            window.draw(torso);
+            window.draw(lLeg);
+            window.draw(rLeg);
+            window.draw(lArm);
+            window.draw(rArm);
+
+            window.draw(loseText);
+
+            window.display();
+            break;
+
+        case 0:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.draw(head);
+
+            window.display();
+            break;
+
+        default:
+            window.clear();
+            window.draw(gameWord);
+
+            window.draw(wordBank);
+            window.draw(bankText);
+            window.draw(baseLine);
+            window.draw(standLine);
+            window.draw(hookLine);
+            window.draw(hookLine2);
+
+            window.display();
+            break;
+    }
+
 }
 
+
+/* not used needs deleted if not used by end
 void returnArray(string arr[], int length) {
     for (int i = 0; i < length; i++) {
         cout << arr[i] << " ";
     }
     cout << endl;
 }
+*/
 
 string easy() {
     // hint animals
@@ -196,24 +365,47 @@ int enterLetter(sf::RenderWindow &window){
     sf::Text playerText;
     playerText.setPosition(60,300);
     playerText.setColor(sf::Color::Red);
+    playerText.setCharacterSize(75);
 
     while (window.isOpen())
     {
         while(window.pollEvent(event))
         {
-            if (event.type == sf::Event::TextEntered)
-            {
-                if(event.text.unicode < 128)
-                {
-                    playerInput +=event.text.unicode;
-                    playerText.setString(playerInput);
-                }
+            switch(event.type) {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::TextEntered:
+                    if(event.text.unicode > 96 && event.text.unicode < 123)
+                    {
+                        playerInput +=event.text.unicode;
+                        playerText.setString(playerInput);
+                    }
+                    break;
             }
+            window.clear();
             window.draw(playerText);
+            window.display();
         }
         window.display();
     }
     return 0;
+}
+
+void gameTime(string word,sf::RenderWindow &window){
+    int userLife = 1; //number of lives the user has to guess the word default 7
+    int len = word.length(); //determines length of word to guess
+    char wordArray[len]; //array to hold the word to guess
+    strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
+    char userArray[len]; //array to hold users correct guesses
+
+    bool gameOver = false;
+
+    while (!gameOver){
+
+        render(window, userLife, word);
+    }
+    return;
 }
 
 void game(string word,sf::RenderWindow &window) {
@@ -237,9 +429,9 @@ void game(string word,sf::RenderWindow &window) {
     int livesCounter = 0;
     int lastCount = 0;
     cout << "number of lives: " << userLife << endl;
-    while (userLife > 0) {
+    while (userLife > 0) {//while the player has more than 0 lives
         //word bank shapes
-        render(window);
+        //render(window,userLife, );
 
         cout << "letter choice: ";
         cin >> userChoice;
@@ -261,7 +453,7 @@ void game(string word,sf::RenderWindow &window) {
         }
         if (wordCounter == len) {
             cout << "Congrats! You win";
-            break;
+            return;
         }
         if (livesCounter == lastCount) {
             userLife--;
@@ -278,7 +470,8 @@ void game(string word,sf::RenderWindow &window) {
             loseTxt.setStyle(sf::Text::Bold | sf::Text::Underlined);
             loseTxt.setFillColor(sf::Color(178,34,34));
             loseTxt.setPosition(960,540);
-
+            window.draw(loseTxt);
+            window.display();
             cout << "You Loose :(\n\n";
             return;
         }
@@ -310,14 +503,15 @@ void hangman(sf::RenderWindow &window) {
                             {
                                 case 0:
                                     word = easy();
-                                    game(word,window);
+                                    gameTime(word,window);
+                                    //game(word,window);
                                 case 1:
                                     word = medium();
-                                    game(word,window);
+                                    gameTime(word,window);
                                     break;
                                 case 2:
                                     word = hard();
-                                    game(word,window);
+                                    gameTime(word,window);
                                     break;
                                 case 3:
                                     window.close();
