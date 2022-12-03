@@ -9,11 +9,12 @@
  * -------------------------------------------------------- */
 #include <iostream>
 #include <cmath>
+#include <string>
 #include "breakout_defs.h"
 
 // Function declarations (prototypes)
 // --------------------------------------------------------
-void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls);
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText);
 Direction processInput() ;
 bool update(Direction &input, bool &started,
             Ball &ball, MovingBlock &paddle,
@@ -25,6 +26,8 @@ bool collisionCheck(Ball* pBall, Block* pBlock);
 int getCollisionPoint(Ball* pBall, Block* pBlock);
 bool checkBlockCollision(Block moving, Block stationary);
 
+sf::Text blockPointsText;
+sf::Font blockPointsTextFont;
 
 /**
  * The main application
@@ -37,7 +40,7 @@ void breakout(sf::RenderWindow &window) {
     MovingBlock thePaddle;
     Borders theWalls;
     Brick theBricks[BRICK_ROWS][BRICK_COLUMNS];
-    setup(theBall, thePaddle, theBricks, theWalls);
+    setup(theBall, thePaddle, theBricks, theWalls, blockPointsText);
 
 
     // timing variables for the main game loop
@@ -99,7 +102,19 @@ void breakout(sf::RenderWindow &window) {
  * @param paddle - player paddle
  * @param walls - set border walls
  */
-void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls) {
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText) {
+
+    //points text initial setup (point values assigned in render)
+    if(!blockPointsTextFont.loadFromFile("../arial.ttf")) //windows
+    {
+        if(!blockPointsTextFont.loadFromFile("arial.ttf")) //mac
+        {
+
+        }
+    }
+    blockPointsText.setFont(blockPointsTextFont);
+    blockPointsText.setCharacterSize(15);
+    blockPointsText.setFillColor(sf::Color::Black);
 
     // --- init border walls ---
     walls.leftWall.left = 0.0;
@@ -342,6 +357,12 @@ void render(sf::RenderWindow &window, Ball ball, MovingBlock paddle, Brick brick
         for (int column = 0; column < BRICK_COLUMNS; column++) {
             if (!pBrick->hit) {
                 window.draw(pBrick->block.rectangle);
+
+                std::string ss = std::to_string(pBrick->points);
+                blockPointsText.setString(ss);
+                blockPointsText.setPosition(pBrick->block.left + (pBrick->block.width / 2), pBrick->block.top);
+
+                window.draw(blockPointsText);
             }
             pBrick++;
         } // columns
