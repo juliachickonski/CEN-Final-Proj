@@ -15,7 +15,7 @@
 
 // Function declarations (prototypes)
 // --------------------------------------------------------
-void setup(Ball &ball, Borders &border, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &textfont1);
+void setup(Ball &ball, Borders &border, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &blockPointsText);
 Direction processInput();
 bool update(Direction &input, Ball &ball, Borders borders,
             Brick theBricks[BRICK_ROWS][BRICK_COLUMNS],
@@ -99,7 +99,7 @@ void breakout(sf::RenderWindow &window) {
  * @param paddle - the paddle the player is controlling left/right
  * @return void
  */
-void setup(Ball &ball, Borders &theBorder, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &textfont1) {
+void setup(Ball &ball, Borders &theBorder, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &blockPointsText) {
 
     //points text initial setup (point values assigned in render)
     if(!blockPointsTextFont.loadFromFile("../arial.ttf")) //windows
@@ -109,9 +109,9 @@ void setup(Ball &ball, Borders &theBorder, MovingBlock &paddle, Brick theBricks[
 
         }
     }
-    textfont1.setFont(blockPointsTextFont);
-    textfont1.setCharacterSize(15);
-    textfont1.setFillColor(sf::Color::Black);
+    blockPointsText.setFont(blockPointsTextFont);
+    blockPointsText.setCharacterSize(15);
+    blockPointsText.setFillColor(sf::Color::Black);
 
     //left border
     theBorder.left_wall.left = 0.0;
