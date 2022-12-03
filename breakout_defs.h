@@ -17,7 +17,7 @@
 // window properties
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const sf::Color WINDOW_COLOR = sf::Color::White;
+const sf::Color WINDOW_COLOR = sf::Color::Black;
 // drawing properties
 const float FRAME_RATE = (1.0/30.0) * 1000.0;       // FPS in ms
 const sf::Color BALL_COLOR = sf::Color::Blue;
