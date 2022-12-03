@@ -11,6 +11,7 @@
 #include <cmath>
 #include <string>
 #include "breakout_defs.h"
+#include "menu.h"
 
 // Function declarations (prototypes)
 // --------------------------------------------------------
@@ -25,8 +26,10 @@ bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS]
 bool collisionCheck(Ball* pBall, Block* pBlock);
 int getCollisionPoint(Ball* pBall, Block* pBlock);
 bool checkBlockCollision(Block moving, Block stationary);
+void updatePoints(int points);
 
 sf::Text blockPointsText;
+sf::Text pointTotal;
 sf::Font blockPointsTextFont;
 
 /**
@@ -34,6 +37,11 @@ sf::Font blockPointsTextFont;
  * @return OS stats message (0=Success)
  */
 void breakout(sf::RenderWindow &window) {
+    pointTotal.setString('0');
+    pointTotal.setFont(blockPointsTextFont);
+    pointTotal.setCharacterSize(40);
+    pointTotal.setFillColor(sf::Color::White);
+    pointTotal.setPosition(100, 100);
 
     // declare a ball variable and populate it in the center of the window
     Ball theBall;
@@ -320,6 +328,13 @@ bool update(Direction &input, bool &started,
     return gameOver;
 } // end update
 
+void updatePoints(int points) {
+    std::string ttotal = pointTotal.getString();
+    int total = std::stoi(ttotal);
+
+    total += points;
+    pointTotal.setString(std::to_string(total));
+}
 
 /**
  * draw the ball on the graphics window
@@ -363,6 +378,8 @@ void render(sf::RenderWindow &window, Ball ball, MovingBlock paddle, Brick brick
                 blockPointsText.setPosition(pBrick->block.left + (pBrick->block.width / 2), pBrick->block.top);
 
                 window.draw(blockPointsText);
+
+                window.draw(pointTotal);
             }
             pBrick++;
         } // columns
@@ -418,14 +435,19 @@ bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS]
         for (int column = 0; column < BRICK_COLUMNS; column++) {
             if (!pBrick->hit) {
                 pBrick->hit = collisionCheck(&ball, &pBrick->block);
+
+                if (pBrick->hit) {
+                    updatePoints(pBrick->points);
+                }
             }
             pBrick++;
         } // columns
     } // rows
 
     return gameOver;
-} // doCollisionChecks
+}
 
+// doCollisionChecks
 bool collisionCheck(Ball* pBall, Block* pBlock) {
     bool collision = false;
 
