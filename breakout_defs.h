@@ -4,7 +4,7 @@
  *   Class: CEN 3031, Fall 2022
  * Purpose: Stores constants & structs for the breakout game
  * -------------------------------------------------------- */
-#include <SFML/Graphics.hpp>
+#include "libs/include/SFML/Graphics.hpp"
 
 #ifndef BREAKOUTPADDLE_BREAKOUT_DEFS_H
 #define BREAKOUTPADDLE_BREAKOUT_DEFS_H

@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include "libs/include/SFML/Graphics.hpp"
 #include "Menu.h"
 #include "Hangman.h"
 #include "breakout_defs.h"

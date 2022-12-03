@@ -6,7 +6,7 @@
 #define COP_FINAL_HANGMANMENU_H
 
 #pragma once
-#include <SFML/Graphics.hpp>
+#include "libs/include/SFML/Graphics.hpp"
 
 #define MAX_MENU_ITEMS 4
 
