@@ -1,7 +1,5 @@
 #include "Hangman.h"
 #include "HangmanMenu.h"
-//#include "main.cpp"
-//#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -15,13 +13,14 @@ using std::string;
 
 sf::Font textFont;
 
-void render(sf::RenderWindow &window, int userLives , string word){
+void render(sf::RenderWindow &window, int userLives , string gWord, char userInput){
     if(!textFont.loadFromFile("../arial.ttf")) //windows
     {
         if(!textFont.loadFromFile("arial.ttf")) //mac
         {
         }
     }
+    //word bank shapes
     //word bank box
     sf::RectangleShape wordBank(sf::Vector2f(300,600));
     wordBank.setFillColor(sf::Color(0, 0, 0));
@@ -36,6 +35,40 @@ void render(sf::RenderWindow &window, int userLives , string word){
     bankText.setCharacterSize(40);
     bankText.setStyle(sf::Text::Bold);
     bankText.setPosition(1493,155);
+
+    sf::Text letters[26];
+    for (int i = 0; i < 26; i++) {
+        letters[i].setPosition(3010,610);
+        letters[i].setFont(textFont);
+        letters[i].setFillColor((sf::Color(255, 255, 255)));
+        letters[i].setCharacterSize(40);
+    }
+    letters[0].setString('a');
+    letters[1].setString('b');
+    letters[2].setString('c');
+    letters[3].setString('d');
+    letters[4].setString('e');
+    letters[5].setString('f');
+    letters[6].setString('g');
+    letters[7].setString('h');
+    letters[8].setString('i');
+    letters[9].setString('j');
+    letters[10].setString('k');
+    letters[11].setString('l');
+    letters[12].setString('m');
+    letters[13].setString('n');
+    letters[14].setString('o');
+    letters[15].setString('p');
+    letters[16].setString('q');
+    letters[17].setString('r');
+    letters[18].setString('s');
+    letters[19].setString('t');
+    letters[20].setString('u');
+    letters[21].setString('v');
+    letters[22].setString('w');
+    letters[23].setString('x');
+    letters[24].setString('y');
+    letters[25].setString('z');
 
 
     //hangman holder shape
@@ -92,16 +125,20 @@ void render(sf::RenderWindow &window, int userLives , string word){
     loseText.setPosition(625,25);
 
     sf::Text gameWord;
-    gameWord.setString(word);
+    gameWord.setString(userInput);
     gameWord.setFont(textFont);
     gameWord.setCharacterSize(40);
     gameWord.setStyle(sf::Text::Bold);
     gameWord.setPosition(12,12);
 
+    sf::RectangleShape wordLine(sf::Vector2f(150, 5));
+
     switch(userLives){
         case 7:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(letters[0]);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -259,16 +296,6 @@ void render(sf::RenderWindow &window, int userLives , string word){
 
 }
 
-
-/* not used needs deleted if not used by end
-void returnArray(string arr[], int length) {
-    for (int i = 0; i < length; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
-}
-*/
-
 string easy() {
     // hint animals
     // maybe one letter already revealed
@@ -351,10 +378,10 @@ string hard() {
     return word[0];
 }
 
-int enterLetter(sf::RenderWindow &window){
-    if(!textFont.loadFromFile("../arial.ttf")) //windows
+int enterLetter(sf::RenderWindow &window) {
+    if (!textFont.loadFromFile("../arial.ttf")) //windows
     {
-        if(!textFont.loadFromFile("arial.ttf")) //mac
+        if (!textFont.loadFromFile("arial.ttf")) //mac
         {
 
         }
@@ -363,22 +390,19 @@ int enterLetter(sf::RenderWindow &window){
     sf::Event event;
     sf::String playerInput;
     sf::Text playerText;
-    playerText.setPosition(60,300);
+    playerText.setPosition(60, 300);
     playerText.setColor(sf::Color::Red);
     playerText.setCharacterSize(75);
 
-    while (window.isOpen())
-    {
-        while(window.pollEvent(event))
-        {
-            switch(event.type) {
+    while (window.isOpen()) {
+        while (window.pollEvent(event)) {
+            switch (event.type) {
                 case sf::Event::Closed:
                     window.close();
                     break;
                 case sf::Event::TextEntered:
-                    if(event.text.unicode > 96 && event.text.unicode < 123)
-                    {
-                        playerInput +=event.text.unicode;
+                    if (event.text.unicode > 96 && event.text.unicode < 123) {
+                        playerInput += event.text.unicode;
                         playerText.setString(playerInput);
                     }
                     break;
@@ -393,19 +417,141 @@ int enterLetter(sf::RenderWindow &window){
 }
 
 void gameTime(string word,sf::RenderWindow &window){
-    int userLife = 1; //number of lives the user has to guess the word default 7
+    int userLife = 7; //number of lives the user has to guess the word default 7
     int len = word.length(); //determines length of word to guess
+    int wordCounter = 0;
+    int livesCounter = 0; //tracks users lives
+    int lastCount = 0;
+    char userInput = ';'; //the letter the user guesses
     char wordArray[len]; //array to hold the word to guess
-    strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
     char userArray[len]; //array to hold users correct guesses
-
     bool gameOver = false;
 
-    while (!gameOver){
 
-        render(window, userLife, word);
+    strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
+
+    //fills user array with spaces
+    for (int i = 0; i < len; i++) {
+        userArray[i] = ' ';
     }
-    return;
+    render(window,userLife,word,userInput);
+    while (!gameOver) {
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            switch (event.type) {
+                case sf::Event::KeyReleased:
+                    switch (event.key.code) {
+                        case sf::Keyboard::A:
+                            userInput = 'a';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::B:
+                            userInput = 'b';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::C:
+                            userInput = 'c';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::D:
+                            userInput = 'd';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::E:
+                            userInput = 'e';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::F:
+                            userInput = 'f';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::G:
+                            userInput = 'g';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::H:
+                            userInput = 'h';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::I:
+                            userInput = 'i';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::J:
+                            userInput = 'j';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::K:
+                            userInput = 'k';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::L:
+                            userInput = 'l';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::M:
+                            userInput = 'm';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::N:
+                            userInput = 'n';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::O:
+                            userInput = 'o';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::P:
+                            userInput = 'p';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::Q:
+                            userInput = 'q';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::R:
+                            userInput = 'r';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::S:
+                            userInput = 's';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::T:
+                            userInput = 't';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::U:
+                            userInput = 'u';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::V:
+                            userInput = 'v';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::W:
+                            userInput = 'w';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::X:
+                            userInput = 'x';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::Y:
+                            userInput = 'y';
+                            render(window,userLife,word,userInput);
+                            break;
+                        case sf::Keyboard::Z:
+                            userInput = 'z';
+                            render(window,userLife,word,userInput);
+                            break;
+                        }
+                    }
+            }
+        }
+    render(window,userLife,word, userInput);
+    }
 }
 
 void game(string word,sf::RenderWindow &window) {
@@ -428,9 +574,10 @@ void game(string word,sf::RenderWindow &window) {
     int wordCounter = 0;
     int livesCounter = 0;
     int lastCount = 0;
+
     cout << "number of lives: " << userLife << endl;
+
     while (userLife > 0) {//while the player has more than 0 lives
-        //word bank shapes
         //render(window,userLife, );
 
         cout << "letter choice: ";

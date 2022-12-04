@@ -4,7 +4,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-//sf::Font textFont;
 void hangman(sf::RenderWindow &window);
 const sf::Color BACKGROUND_COLOR = sf::Color::White;
 
