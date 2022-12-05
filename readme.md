@@ -1,6 +1,6 @@
 # Minigamers - CEN 3031 Project 
 
-_Alpha v.1.1_
+_Alpha v.2.0_
 
 A program that features different type of mini games. Games featured in this version:
 * Hangman
@@ -35,7 +35,7 @@ Windows:
 
 Mac:
 - Install the files into your IDE, along with SFML libraries
-- ***If m1 mac** -* Alter the CMAKE to change x64 to x86 compile  
+- ***If m1 mac** -* Alter the CMAKE to change x64 to x86 compile support
 - Run the minigame
 
 
@@ -75,6 +75,11 @@ Julia Chickonski
 - Got menu system to be functioning (can use arrow keys to navigate & enter key to select)
 - 'Play' button now links to the hangman game
 - Menu font now works
+
+**v.2.0 changes:**
+- Updated menu to include Breakout & Hangman options
+- Added breakout game
+- Hangman now has difficulty options
 
 ## License
 
