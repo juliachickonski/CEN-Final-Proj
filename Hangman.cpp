@@ -179,15 +179,29 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     loseText.setPosition(625,25);
 
     sf::Text gameWord;
-    gameWord.setString(userInput);
+    gameWord.setString(gWord);
     gameWord.setFont(textFont);
     gameWord.setCharacterSize(40);
     gameWord.setStyle(sf::Text::Bold);
-    gameWord.setPosition(12,12);
+    gameWord.setPosition(12,800);
+
+    sf::Text lengthText; // tells user how many letters the word they are trying to guess is
+    lengthText.setString("Number of letters in word: " );
+    lengthText.setFont(textFont);
+    lengthText.setCharacterSize(30);
+    lengthText.setStyle(sf::Text::Bold);
+    lengthText.setPosition(12,12);
+
+    sf::Text wordLength;
+    wordLength.setString(std::to_string(length));
+    wordLength.setFont(textFont);
+    wordLength.setCharacterSize(30);
+    wordLength.setStyle(sf::Text::Bold);
+    wordLength.setPosition(400,12);
 
     sf::RectangleShape wordLine(sf::Vector2f(150, 5));
     
-    if (win == true){
+    if (win){
         userLives = 0;
     }
 
@@ -195,6 +209,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 7:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(wordLength);
+            window.draw(lengthText);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -209,6 +226,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 6:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(wordLength);
+            window.draw(lengthText);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -225,6 +245,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 5:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(wordLength);
+            window.draw(lengthText);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -243,6 +266,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.clear();
             window.draw(gameWord);
 
+            window.draw(wordLength);
+            window.draw(lengthText);
+
             window.draw(wordBank);
             window.draw(bankText);
             window.draw(baseLine);
@@ -260,6 +286,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 3:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(wordLength);
+            window.draw(lengthText);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -280,6 +309,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.clear();
             window.draw(gameWord);
 
+            window.draw(wordLength);
+            window.draw(lengthText);
+
             window.draw(wordBank);
             window.draw(bankText);
             window.draw(baseLine);
@@ -299,6 +331,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 1:
             window.clear();
             window.draw(gameWord);
+
+            window.draw(wordLength);
+            window.draw(lengthText);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -332,6 +367,9 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
             window.draw(winText);
 
+            window.draw(wordLength);
+            window.draw(lengthText);
+
             window.display();
             break;
 
@@ -360,10 +398,12 @@ char guessCheck(const char wordArray[], char userChoice, char userArray[], const
             wordCounter++;
         }
     }
-    return userArray[word.length()];
+    return userArray[len];
 }
 
 void gameTime(const string& word,sf::RenderWindow &window){
+    len = word.length(); //length of word to be guessed
+
     int userLife = 7; //number of lives the user has to guess the word default 7
     char userInput = {}; //the letter the user guesses
     char wordArray[len]; //array to hold the word to guess
@@ -378,29 +418,29 @@ void gameTime(const string& word,sf::RenderWindow &window){
 
     strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
 
-   render(window,userLife, word, userInput, len, userArray, win);
+    render(window,userLife, word, userInput, len, userArray, win);
 
-   while (window.isOpen())
-   {
-       while (window.pollEvent(event))
-       {
-           while (!gameOver)
-           {
-               window.setKeyRepeatEnabled(false);
-                    switch (event.type)
-                    {
-                        case sf::Event::KeyPressed:
+     while (window.isOpen())
+    {
+         while (window.pollEvent(event))
+         {
+             while (!gameOver)
+             {
+                 window.setKeyRepeatEnabled(false);
+                 switch (event.type)
+                 {
+                     case sf::Event::KeyPressed:
+                         if (!wait) {
+                             switch (event.key.code) {
+                                 case sf::Keyboard::A:
+                                     userInput = 'a';
+                                     cout << userInput;
+                                     guessCheck(&wordArray[len], userInput, userArray, word);
+                                     render(window, userLife, word, userInput, len, userArray, win);
+                                     break;
 
-                            if (!wait) {
-                                switch (event.key.code) {
-                                    case sf::Keyboard::A:
-                                        userInput = 'a';
-                                        cout << userInput;
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::B:
-                                        userInput = 'b';
+                                     case sf::Keyboard::B:
+                                      userInput = 'b';
                                         guessCheck(&wordArray[len], userInput, userArray, word);
                                         render(window, userLife, word, userInput, len, userArray, win);
                                         break;
@@ -533,7 +573,7 @@ void gameTime(const string& word,sf::RenderWindow &window){
                    userLife--;
                }
                if (wordCounter == len) {
-                   //win = true;
+                   win = true;
                }
                render(window,userLife, word, userInput, len, userArray, win);
             }
