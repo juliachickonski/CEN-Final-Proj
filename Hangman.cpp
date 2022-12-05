@@ -29,7 +29,7 @@ void gameTime(const string& word,sf::RenderWindow &window){
     int len = word.length(); //length of word to be guessed
 
     int userLife = 7; //number of lives the user has to guess the word default 7
-    char userInput = {}; //the letter the user guesses
+    char userInput; //the letter the user guesses
     char wordArray[len]; //array to hold the word to guess
     char userArray[len]; //array to hold users correct guesses
     char letterGraveyard[26];
