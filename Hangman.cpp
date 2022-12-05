@@ -15,11 +15,411 @@ sf::Font textFont;
 sf::Event event;
 
 //global variables
-int len; //length of word
-int wordCounter = 0;
-int livesCounter = 0; //tracks users lives
-int lastCount = 0;
 
+void render(sf::RenderWindow &window, int userLives , const string& gWord, char userInput,int length, char userArray[], bool win, char letterGraveyard[26]);
+void guessCheck(const char wordArray[], char userChoice, char userArray[], const string& word, int len) ;
+string easy();
+string medium();
+string hard();
+
+void gameTime(const string& word,sf::RenderWindow &window){
+    int wordCounter = 0;
+    int livesCounter = 0; //tracks users lives
+    int lastCount = 0;
+    int len = word.length(); //length of word to be guessed
+
+    int userLife = 7; //number of lives the user has to guess the word default 7
+    char userInput = {}; //the letter the user guesses
+    char wordArray[len]; //array to hold the word to guess
+    char userArray[len]; //array to hold users correct guesses
+    char letterGraveyard[26];
+    int graveyardCounter = 0;
+    bool win = false;
+
+    for (int i = 0; i < len; i++) {
+        userArray[i] = ' ';
+    }
+    for (int i = 0; i < 26; i++) {
+        letterGraveyard[i] = ' ';
+    }
+
+    strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
+
+    render(window,userLife, word, userInput, len, userArray, win, letterGraveyard);
+
+     while (window.isOpen())
+    {
+         while (window.pollEvent(event))
+         {
+                 window.setKeyRepeatEnabled(false);
+                 switch (event.type)
+                 {
+                     case sf::Event::KeyPressed:
+                             switch (event.key.code) {
+                                 case sf::Keyboard::A:
+                                     userInput = 'a';
+                                     cout << userInput;
+                                     for (int i = 0; i < len; i++) {
+                                         if (userInput == wordArray[i]) {
+                                             userArray[i] = userInput;
+                                             livesCounter++;
+                                             wordCounter++;
+                                         }
+                                     }
+                                     //render(window, userLife, word, userInput, len, userArray, win);
+                                     break;
+
+                                     case sf::Keyboard::B:
+                                        userInput = 'b';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                             userArray[i] = userInput;
+                                             livesCounter++;
+                                             wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::C:
+                                        userInput = 'c';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                             userArray[i] = userInput;
+                                             livesCounter++;
+                                             wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::D:
+                                        userInput = 'd';
+                                     for (int i = 0; i < len; i++) {
+                                         if (userInput == wordArray[i]) {
+                                             userArray[i] = userInput;
+                                             livesCounter++;
+                                             wordCounter++;
+                                         }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::E:
+                                        userInput = 'e';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::F:
+                                        userInput = 'f';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::G:
+                                        userInput = 'g';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::H:
+                                        userInput = 'h';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::I:
+                                        userInput = 'i';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::J:
+                                        userInput = 'j';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::K:
+                                        userInput = 'k';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::L:
+                                        userInput = 'l';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::M:
+                                        userInput = 'm';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::N:
+                                        userInput = 'n';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::O:
+                                        userInput = 'o';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::P:
+                                        userInput = 'p';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::Q:
+                                        userInput = 'q';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::R:
+                                        userInput = 'r';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::S:
+                                        userInput = 's';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::T:
+                                        userInput = 't';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::U:
+                                        userInput = 'u';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::V:
+                                        userInput = 'v';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::W:
+                                        userInput = 'w';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::X:
+                                        userInput = 'x';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                    case sf::Keyboard::Y:
+                                        userInput = 'y';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+
+                                    case sf::Keyboard::Z:
+                                        userInput = 'z';
+                                        for (int i = 0; i < len; i++) {
+                                            if (userInput == wordArray[i]) {
+                                                userArray[i] = userInput;
+                                                livesCounter++;
+                                                wordCounter++;
+                                            }
+                                        }
+                                        //render(window, userLife, word, userInput, len, userArray, win);
+                                        break;
+                                }
+               if (livesCounter == lastCount) {
+                   userLife--;
+                   letterGraveyard[graveyardCounter] = userInput;
+                   graveyardCounter++;
+               }
+               
+               lastCount = livesCounter;
+               
+               if (wordCounter == len) {
+                   win = true;
+               }
+
+               render(window, userLife, word, userInput, len, userArray, win, letterGraveyard);
+            }
+        }
+
+    }
+}
+
+//game difficulty choice
+void hangman(sf::RenderWindow &window) {
+    HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
+
+    string word;
+    while (window.isOpen()) {
+        while (window.pollEvent(event))
+        {
+            switch (event.type)
+            {
+                case sf::Event::KeyReleased:
+                    switch (event.key.code)
+                    {
+                        case sf::Keyboard::Up:
+                            HangmanMenu.moveUp();
+                            break;
+                        case sf::Keyboard::Down:
+                            HangmanMenu.moveDown();
+                            break;
+                        case sf::Keyboard::Return:
+                            switch (HangmanMenu.getPressedItem())
+                            {
+                                case 0:
+                                    word = easy();
+                                    gameTime(word,window);
+                                case 1:
+                                    word = medium();
+                                    gameTime(word,window);
+                                    break;
+                                case 2:
+                                    word = hard();
+                                    gameTime(word,window);
+                                    break;
+                                case 3:
+                                    window.close();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+            }
+        }
+        window.clear();
+
+        HangmanMenu.draw(window);
+
+        window.display();
+    }
+}
+
+//Difficulties
+//______________________________________________________
 string easy() {
     // hint animals
     // maybe one letter already revealed
@@ -102,7 +502,9 @@ string hard() {
     return word[0];
 }
 
-void render(sf::RenderWindow &window, int userLives , const string& gWord, char userInput,int length, char userArray[], bool win){
+//image rendering
+
+void render(sf::RenderWindow &window, int userLives , const string& gWord, char userInput,int length, char userArray[], bool win, char letterGraveyard[26]){
     if(!textFont.loadFromFile("../arial.ttf")) //windows
     {
         if(!textFont.loadFromFile("arial.ttf")) //mac
@@ -124,6 +526,36 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     bankText.setCharacterSize(40);
     bankText.setStyle(sf::Text::Bold);
     bankText.setPosition(1493,155);
+
+    float x = 1525;
+    float y = 125;
+
+    sf::Text graveyardString[26];
+    for (int i = 0; i < 26; i++) {//sets array for graveyardString
+        x += 75;
+        if (i % 4 == 0){
+            x = 1525;
+            y += 100;
+        }
+        graveyardString[i].setString(letterGraveyard[i]);
+        graveyardString[i].setFont(textFont);
+        graveyardString[i].setCharacterSize(40);
+        graveyardString[i].setStyle(sf::Text::Bold);
+        graveyardString[i].setPosition(x , y);
+    }
+
+    int xString = 750;
+    int yString = 700;
+    sf::Text userString[length];
+    for (int i = 0; i < length; i++) {//sets array for graveyardString
+        xString += 30;
+        userString[i].setString(userArray[i]);
+        userString[i].setFont(textFont);
+        userString[i].setCharacterSize(40);
+        userString[i].setStyle(sf::Text::Bold);
+        userString[i].setPosition(xString , yString);
+        xString += 30;
+    }
 
     //hangman holder shape
     sf::RectangleShape baseLine(sf::Vector2f(300,5));
@@ -164,7 +596,7 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     rArm.setPosition(732,388);
 
     sf::Text winText;
-    winText.setString("\t\tYou Earned a Point! \nPress enter to continue.");
+    winText.setString("\t\tYou Win! \nPress enter to continue.");
     winText.setFont(textFont);
     winText.setCharacterSize(50);
     winText.setStyle(sf::Text::Bold);
@@ -178,7 +610,14 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     loseText.setStyle(sf::Text::Bold);
     loseText.setPosition(625,25);
 
-    sf::Text gameWord;
+    sf::Text uLetter;//for development purposes
+    uLetter.setString(userInput);
+    uLetter.setFont(textFont);
+    uLetter.setCharacterSize(40);
+    uLetter.setStyle(sf::Text::Bold);
+    uLetter.setPosition(12,900);
+
+    sf::Text gameWord; //displays word to guess for development purposes
     gameWord.setString(gWord);
     gameWord.setFont(textFont);
     gameWord.setCharacterSize(40);
@@ -200,15 +639,13 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     wordLength.setPosition(400,12);
 
     sf::RectangleShape wordLine(sf::Vector2f(150, 5));
-    
-    if (win){
-        userLives = 0;
-    }
+
 
     switch(userLives){
         case 7:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -220,12 +657,21 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(hookLine);
             window.draw(hookLine2);
 
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 6:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -239,12 +685,25 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
             window.draw(head);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 5:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -259,12 +718,25 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(head);
             window.draw(torso);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 4:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -280,12 +752,25 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(torso);
             window.draw(lLeg);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 3:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -302,12 +787,25 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(lLeg);
             window.draw(rLeg);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 2:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -325,12 +823,25 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(rLeg);
             window.draw(lArm);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
+            if (win){
+                window.draw(winText);
+            }
+
             window.display();
             break;
 
         case 1:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -349,6 +860,14 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
             window.draw(lArm);
             window.draw(rArm);
 
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
+
             window.draw(loseText);
 
             window.display();
@@ -357,6 +876,7 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
         case 0:
             window.clear();
             window.draw(gameWord);
+            window.draw(uLetter);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -369,6 +889,14 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
             window.draw(wordLength);
             window.draw(lengthText);
+
+            for (int i = 0; i < 26; i++) {
+                window.draw(graveyardString[i]);
+            }
+
+            for (int i = 0; i < length; i++) {
+                window.draw(userString[i]);
+            }
 
             window.display();
             break;
@@ -386,251 +914,5 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
             window.display();
             break;
-    }
-}
-
-//checks if letter guessed 
-char guessCheck(const char wordArray[], char userChoice, char userArray[], const string& word) {
-    for (int i = 0; i < word.length(); i++) {
-        if (userChoice == wordArray[i]) {
-            userArray[i] = userChoice;
-            livesCounter++;
-            wordCounter++;
-        }
-    }
-    return userArray[len];
-}
-
-void gameTime(const string& word,sf::RenderWindow &window){
-    len = word.length(); //length of word to be guessed
-
-    int userLife = 7; //number of lives the user has to guess the word default 7
-    char userInput = {}; //the letter the user guesses
-    char wordArray[len]; //array to hold the word to guess
-    char userArray[len]; //array to hold users correct guesses
-    bool win = false;
-    bool gameOver = false;
-    bool wait = false;
-
-    for (int i = 0; i < len; i++) {
-        userArray[i] = ' ';
-    }
-
-    strcpy(wordArray, word.c_str()); //copies the word letter by letter into wordArray
-
-    render(window,userLife, word, userInput, len, userArray, win);
-
-     while (window.isOpen())
-    {
-         while (window.pollEvent(event))
-         {
-             while (!gameOver)
-             {
-                 window.setKeyRepeatEnabled(false);
-                 switch (event.type)
-                 {
-                     case sf::Event::KeyPressed:
-                         if (!wait) {
-                             switch (event.key.code) {
-                                 case sf::Keyboard::A:
-                                     userInput = 'a';
-                                     cout << userInput;
-                                     guessCheck(&wordArray[len], userInput, userArray, word);
-                                     render(window, userLife, word, userInput, len, userArray, win);
-                                     break;
-
-                                     case sf::Keyboard::B:
-                                      userInput = 'b';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::C:
-                                        userInput = 'c';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::D:
-                                        userInput = 'd';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::E:
-                                        userInput = 'e';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::F:
-                                        userInput = 'f';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::G:
-                                        userInput = 'g';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::H:
-                                        userInput = 'h';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::I:
-                                        userInput = 'i';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::J:
-                                        userInput = 'j';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::K:
-                                        userInput = 'k';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::L:
-                                        userInput = 'l';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::M:
-                                        userInput = 'm';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::N:
-                                        userInput = 'n';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::O:
-                                        userInput = 'o';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::P:
-                                        userInput = 'p';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::Q:
-                                        userInput = 'q';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::R:
-                                        userInput = 'r';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::S:
-                                        userInput = 's';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::T:
-                                        userInput = 't';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::U:
-                                        userInput = 'u';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::V:
-                                        userInput = 'v';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::W:
-                                        userInput = 'w';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::X:
-                                        userInput = 'x';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                    case sf::Keyboard::Y:
-                                        userInput = 'y';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-
-                                    case sf::Keyboard::Z:
-                                        userInput = 'z';
-                                        guessCheck(&wordArray[len], userInput, userArray, word);
-                                        render(window, userLife, word, userInput, len, userArray, win);
-                                        break;
-                                }
-                            }
-                            break;
-                }
-               if (livesCounter == lastCount) {
-                   userLife--;
-               }
-               if (wordCounter == len) {
-                   win = true;
-               }
-               render(window,userLife, word, userInput, len, userArray, win);
-            }
-        }
-
-    }
-}
-
-//game difficulty choice
-void hangman(sf::RenderWindow &window) {
-    HangmanMenu HangmanMenu(window.getSize().x, window.getSize().y);
-
-    string word;
-    while (window.isOpen()) {
-        while (window.pollEvent(event))
-        {
-            switch (event.type)
-            {
-                case sf::Event::KeyReleased:
-                    switch (event.key.code)
-                    {
-                        case sf::Keyboard::Up:
-                            HangmanMenu.moveUp();
-                            break;
-                        case sf::Keyboard::Down:
-                            HangmanMenu.moveDown();
-                            break;
-                        case sf::Keyboard::Return:
-                            switch (HangmanMenu.getPressedItem())
-                            {
-                                case 0:
-                                    word = easy();
-                                    gameTime(word,window);
-                                case 1:
-                                    word = medium();
-                                    gameTime(word,window);
-                                    break;
-                                case 2:
-                                    word = hard();
-                                    gameTime(word,window);
-                                    break;
-                                case 3:
-                                    window.close();
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-            }
-        }
-        window.clear();
-
-        HangmanMenu.draw(window);
-
-        window.display();
     }
 }
