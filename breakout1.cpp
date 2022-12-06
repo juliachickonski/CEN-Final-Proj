@@ -1,50 +1,55 @@
 /* --------------------------------------------------------
- *    File: breakout1.cpp
+ *    File: breakout.cpp
  *  Author: Tyler MacPhee
- *   Class: COP 2001, Spring 2022, CRN #10410
- * Purpose: 2D breakout game
+ *   Class: CEN 3031, Fall 2022
+ * Purpose: breakout game code
  * Audit:
- * 3.29.22 TM added walls to main app file
- * 4.7.22 TM added collision detection to walls
- * 4.26.22 TM added collision detection to paddle
- * 4.30.22 TM added bricks & collision for them, breakout game finished
+ * 12-01-22 || Fixed paddle & block collision logic
+ * 12-01-22 || Completed issue #1
  * -------------------------------------------------------- */
-#include "breakout_defs.h"
+#include <iostream>
 #include <cmath>
 #include <string>
+#include "breakout_defs.h"
+#include "menu.h"
 
 // Function declarations (prototypes)
 // --------------------------------------------------------
-void setup(Ball &ball, Borders &border, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &blockPointsText);
-Direction processInput();
-bool update(Direction &input, Ball &ball, Borders borders,
-            Brick theBricks[BRICK_ROWS][BRICK_COLUMNS],
-            MovingBlock &paddle, float delta, bool &started);
-void render(sf::RenderWindow &window, Ball ball, Borders border,
-            Brick theBricks[BRICK_ROWS][BRICK_COLUMNS],
-            MovingBlock paddle, float delta);
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText);
+Direction processInput() ;
+bool update(Direction &input, bool &started,
+            Ball &ball, MovingBlock &paddle,
+            Brick bricks[BRICK_ROWS][BRICK_COLUMNS],
+            Borders walls, float delta);
+void render(sf::RenderWindow &window, Ball ball, MovingBlock paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders walls, float delta);
+bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders walls);
+bool collisionCheck(Ball* pBall, Block* pBlock);
 int getCollisionPoint(Ball* pBall, Block* pBlock);
-bool checkCollision(Ball* pBall, Block* pBlock);
 bool checkBlockCollision(Block moving, Block stationary);
-bool doCollisionChecks(Ball &ball, MovingBlock &paddle, Borders &borders, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS]);
+void updatePoints(int points);
+
 sf::Text blockPointsText;
+sf::Text pointTotal;
 sf::Font blockPointsTextFont;
+
 /**
  * The main application
- * @return OS status message (0=Success)
+ * @return OS stats message (0=Success)
  */
 void breakout(sf::RenderWindow &window) {
-    // declare a ball variable for setup function
-    Ball theBall;
-    //Declare border variable for setup function
-    Borders theBorder;
-    //declare paddle variable for setup function
-    MovingBlock paddle;
-    //declare bricks variable for setup function
-    Brick theBricks[BRICK_ROWS][BRICK_COLUMNS];
+    pointTotal.setString('0');
+    pointTotal.setFont(blockPointsTextFont);
+    pointTotal.setCharacterSize(40);
+    pointTotal.setFillColor(sf::Color::White);
+    pointTotal.setPosition(100, 100);
 
-    //set variable properties in separate setup function
-    setup(theBall, theBorder, paddle, theBricks, blockPointsText);
+    // declare a ball variable and populate it in the center of the window
+    Ball theBall;
+    MovingBlock thePaddle;
+    Borders theWalls;
+    Brick theBricks[BRICK_ROWS][BRICK_COLUMNS];
+    setup(theBall, thePaddle, theBricks, theWalls, blockPointsText);
+
 
     // timing variables for the main game loop
     sf::Clock clock;
@@ -53,6 +58,7 @@ void breakout(sf::RenderWindow &window) {
     float delta = 0.0;
 
     bool started = false;
+
     bool gameOver = false;
     while (!gameOver)
     {
@@ -60,6 +66,7 @@ void breakout(sf::RenderWindow &window) {
         stopTime = clock.getElapsedTime();
         delta += (stopTime.asMilliseconds() - startTime.asMilliseconds());
         startTime = stopTime;
+
         // process events
         sf::Event event;
         while (!gameOver && window.pollEvent(event)) {
@@ -67,39 +74,43 @@ void breakout(sf::RenderWindow &window) {
             if (event.type == sf::Event::Closed)
                 gameOver = true;
         }
+
         // Process user input
         // ------------------------------------------------
         Direction userInput = processInput();
         if (userInput == Exit)
             gameOver = true;
+
         // Process Updates
         // ------------------------------------------------
-        if (delta >= FRAME_RATE) {    // if we have made it at least a full frametime
-            gameOver = update(userInput, theBall, theBorder, theBricks, paddle, delta, started);
+        if (delta >= FRAME_RATE) {    // if we have made it at least a full frame time
+
+            gameOver = update(userInput, started, theBall, thePaddle, theBricks, theWalls, delta);
+
             // subtract the frame-rate from the current frame-time
             // for each full frame covered by this update
             while (delta >= FRAME_RATE)
                 delta -= FRAME_RATE;
         }
+
         // Render the window
         // ------------------------------------------------
-        render(window, theBall, theBorder, theBricks, paddle, delta);
+        render(window, theBall, thePaddle, theBricks, theWalls, delta);
+
     } // end main game loop
+
     // game ending, close the graphics window
     window.close();
 } // end main
 
+
 /**
- * set ball, walls, and paddle properties before game starts
- *
- * @author TM
- *
- * @param ball - the ball that bounces off the walls/paddle
- * @param theBorder - the walls defining the play area
- * @param paddle - the paddle the player is controlling left/right
- * @return void
+ * initialize game objects
+ * @param ball - set ball position and size and zero velocity
+ * @param paddle - player paddle
+ * @param walls - set border walls
  */
-void setup(Ball &ball, Borders &theBorder, MovingBlock &paddle, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], sf::Text &blockPointsText) {
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText) {
 
     //points text initial setup (point values assigned in render)
     if(!blockPointsTextFont.loadFromFile("../arial.ttf")) //windows
@@ -113,146 +124,136 @@ void setup(Ball &ball, Borders &theBorder, MovingBlock &paddle, Brick theBricks[
     blockPointsText.setCharacterSize(15);
     blockPointsText.setFillColor(sf::Color::Black);
 
-    //left border
-    theBorder.left_wall.left = 0.0;
-    theBorder.left_wall.top = 0.0;
-    theBorder.left_wall.width = WALL_THICKNESS;
-    theBorder.left_wall.height = WINDOW_HEIGHT;
-    theBorder.left_wall.color = WALL_COLOR;
-    theBorder.left_wall.rectangle.setSize(sf::Vector2f(theBorder.left_wall.width, theBorder.left_wall.height));
-    theBorder.left_wall.rectangle.setPosition(theBorder.left_wall.left, theBorder.left_wall.top);
-    theBorder.left_wall.rectangle.setFillColor(WALL_COLOR);
+    // --- init border walls ---
+    walls.leftWall.left = 0.0;
+    walls.leftWall.top = 0.0;
+    walls.leftWall.width = WALL_THICKNESS;
+    walls.leftWall.height = WINDOW_HEIGHT;
+    walls.leftWall.rectangle.setSize(sf::Vector2f(walls.leftWall.width, walls.leftWall.height));
+    walls.leftWall.rectangle.setPosition(walls.leftWall.left, walls.leftWall.top);
+    walls.leftWall.rectangle.setFillColor(WALL_COLOR);
 
-    //right border
-    theBorder.right_wall.left = WINDOW_WIDTH - WALL_THICKNESS;
-    theBorder.right_wall.top = 0.0;
-    theBorder.right_wall.width = WALL_THICKNESS;
-    theBorder.right_wall.height = WINDOW_HEIGHT;
-    theBorder.right_wall.color = WALL_COLOR;
-    theBorder.right_wall.rectangle.setSize(sf::Vector2f(theBorder.right_wall.width, theBorder.right_wall.height));
-    theBorder.right_wall.rectangle.setPosition(theBorder.right_wall.left, theBorder.right_wall.top);
-    theBorder.right_wall.rectangle.setFillColor(WALL_COLOR);
+    walls.topWall.left = 0.0;
+    walls.topWall.top = 0.0;
+    walls.topWall.width = WINDOW_WIDTH;
+    walls.topWall.height = WALL_THICKNESS;
+    walls.topWall.rectangle.setSize(sf::Vector2f(walls.topWall.width, walls.topWall.height));
+    walls.topWall.rectangle.setPosition(walls.topWall.left, walls.topWall.top);
+    walls.topWall.rectangle.setFillColor(WALL_COLOR);
 
-    //bottom border
-    theBorder.bottom_wall.left = 0.0;
-    theBorder.bottom_wall.top = WINDOW_HEIGHT - WALL_THICKNESS;
-    theBorder.bottom_wall.width = WINDOW_WIDTH;
-    theBorder.bottom_wall.height = WALL_THICKNESS;
-    theBorder.bottom_wall.color = WALL_COLOR;
-    theBorder.bottom_wall.rectangle.setSize(sf::Vector2f(theBorder.bottom_wall.width, theBorder.bottom_wall.height));
-    theBorder.bottom_wall.rectangle.setPosition(theBorder.bottom_wall.left, theBorder.bottom_wall.top);
-    theBorder.bottom_wall.rectangle.setFillColor(WALL_COLOR);
+    walls.rightWall.left = WINDOW_WIDTH - WALL_THICKNESS;
+    walls.rightWall.top = 0.0;
+    walls.rightWall.width = WALL_THICKNESS;
+    walls.rightWall.height = WINDOW_HEIGHT;
+    walls.rightWall.rectangle.setSize(sf::Vector2f(walls.rightWall.width, walls.rightWall.height));
+    walls.rightWall.rectangle.setPosition(walls.rightWall.left, walls.rightWall.top);
+    walls.rightWall.rectangle.setFillColor(WALL_COLOR);
 
-    //top border
-    theBorder.top_wall.left = 0.0;
-    theBorder.top_wall.top = 0.0;
-    theBorder.top_wall.width = WINDOW_WIDTH;
-    theBorder.top_wall.height = WALL_THICKNESS;
-    theBorder.top_wall.color = WALL_COLOR;
-    theBorder.top_wall.rectangle.setSize(sf::Vector2f(theBorder.top_wall.width, theBorder.top_wall.height));
-    theBorder.top_wall.rectangle.setPosition(theBorder.top_wall.left, theBorder.top_wall.top);
-    theBorder.top_wall.rectangle.setFillColor(WALL_COLOR);
+    walls.bottomWall.left = 0.0;
+    walls.bottomWall.top = WINDOW_HEIGHT - WALL_THICKNESS;
+    walls.bottomWall.width = WINDOW_WIDTH;
+    walls.bottomWall.height = WALL_THICKNESS;
+    walls.bottomWall.rectangle.setSize(sf::Vector2f(walls.bottomWall.width, walls.bottomWall.height));
+    walls.bottomWall.rectangle.setPosition(walls.bottomWall.left, walls.bottomWall.top);
+    walls.bottomWall.rectangle.setFillColor(WALL_COLOR);
 
-    //set paddle properties
+    // --- player paddle ---
     paddle.block.left = (WINDOW_WIDTH - PADDLE_WIDTH) / 2.0;
-    paddle.block.top = WINDOW_HEIGHT - (2.0 * PADDLE_THICKNESS); //set paddle above bottom wall
+    paddle.block.top = (walls.bottomWall.top - 2 * PADDLE_THICKNESS);
     paddle.block.width = PADDLE_WIDTH;
     paddle.block.height = PADDLE_THICKNESS;
     paddle.block.color = PADDLE_COLOR;
     paddle.block.rectangle.setSize(sf::Vector2f(paddle.block.width, paddle.block.height));
-    paddle.block.rectangle.setFillColor(PADDLE_COLOR);
-    paddle.block_velocityX = 0.0;
-    paddle.block_velocityY = 0.0;
+    paddle.block.rectangle.setFillColor(paddle.block.color);
+    paddle.velocityX = 0.0;
+    paddle.velocityY = 0.0;
 
-    //setup ball properties
+    // --- init ball ---
     ball.radius = BALL_RADIUS;
-    ball.coordinateX = paddle.block.left + (PADDLE_WIDTH / 2.0);
-    ball.coordinateY = paddle.block.top - BALL_RADIUS - 1;
+    ball.coordinateX = paddle.block.left + paddle.block.width / 2.0;
+    ball.coordinateY = paddle.block.top - ball.radius - 1;
     ball.velocityX = 0.0;
     ball.velocityY = 0.0;
     ball.color = BALL_COLOR;
 
-    //setup bricks
-    float bricksTop = FIRST_BRICK; //start at lowest brick row
-
-    Brick *pNext = &theBricks[0][0];    //get pointer to first brick
-
+    // -- bricks ---
+    float bricksTop = FIRST_BRICK;
+    int score = 1;
+    int speedAdjust = 0;
+    Brick* pNext = &bricks[0][0]; // get pointer to 1st brick
     for (int row = 0; row < BRICK_ROWS; row++) {
-        float bricksLeft = BRICKS_LEFT; //start back at far left
+        float bricksLeft = BRICKS_LEFT;
 
         for (int column = 0; column < BRICK_COLUMNS; column++) {
-
-            //offset left & top by 1 to give each a border
+            // offset left/top by 1 pixel to give each brick a border
             pNext->block.left = bricksLeft + 1;
             pNext->block.top = bricksTop + 1;
 
-            //subtract 2 from width/height to make room for 1-pixel
-            //border on each side
+            // subtract 2 from width/height to make room for the 1-pixel
+            // border on each side
             pNext->block.width = BRICK_WIDTH - 2;
             pNext->block.height = BRICK_HEIGHT - 2;
 
-            //set row properties
+
+            // set row specific properties
             if (row < 2) {
                 pNext->block.color = sf::Color::Yellow;
                 pNext->points = 1;
                 pNext->speedAdjust = 0;
-            } else if (row < 4) {
+            }
+            else if (row < 4) {
                 pNext->block.color = sf::Color::Green;
                 pNext->points = 3;
                 pNext->speedAdjust = 0;
-            } else if (row < 6) {
-                pNext->block.color = sf::Color(255, 165, 0);
+            }
+            else if (row < 6) {
+                pNext->block.color = sf::Color(255,165,0); // Orange
                 pNext->points = 5;
                 pNext->speedAdjust = 1;
-            } else {
+            }
+            else {
                 pNext->block.color = sf::Color::Red;
                 pNext->points = 7;
                 pNext->speedAdjust = 2;
             }
 
-            //set the drawing rectangles
+            // set the drawing rectangle
             pNext->block.rectangle.setSize(sf::Vector2f(pNext->block.width, pNext->block.height));
             pNext->block.rectangle.setFillColor(pNext->block.color);
             pNext->block.rectangle.setPosition(pNext->block.left, pNext->block.top);
 
-            //initialize hit flag off so brick is displayed
+            // initialize hit flag off so brick is displayed
             pNext->hit = false;
 
-            pNext++;
+            pNext++;    // get next brick
 
-            bricksLeft += BRICK_WIDTH; //move next brick to right
+            bricksLeft += BRICK_WIDTH;
+        } // brick columns
 
-        } //brick columns
+        bricksTop -= BRICK_HEIGHT;
+    } // brick rows
 
-        bricksTop -= BRICK_HEIGHT; //move up to next row
+} // end setup
 
-    } //brick rows
 
-}
 /**
- * convert user keyboard input into recognized direction values (documented in Keyboard.hpp)
- *
- * for:
- * left=1/Left
- * up=2/UP
- * right=3/Right
- * down=4/Down
- * start=space
- *
- * @return direction - user input (default no-input=0 or 'None', quit=-1 or 'Exit')
+ * convert user keyboard input into recognized integer values
+ * for left=1/up=2/right=3/down=4
+ * @return int - user input (default no-input=0, quit=-1)
  */
 Direction processInput() {
     Direction input = None;  // no input
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         input = Left;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         input = Up;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         input = Right;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         input = Down;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
@@ -261,263 +262,112 @@ Direction processInput() {
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         input = Start;
     }
+
     return input;
 } // end getUserInput
 
+
 /**
  * update the state of game objects
- *
  * @param input - user keyboard input
+ * @param started - has user started the game
  * @param ball  - update ball position and speed
- * @param paddle - update paddle position left/right
+ * @param paddle - player paddle
+ * @param bricks - the rack of bricks
  * @param delta - current frame time
- * @param started - flag if the game was started according to key-press
- *
- * @return bool - true if ball hits bottom wall & game ends
+ * @returns bool - true if game-over ball hit the bottom wall
  */
-bool update(Direction &input, Ball &ball, Borders border, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], MovingBlock &paddle, float delta, bool &started) {
-
-    bool game_over = false;
+bool update(Direction &input, bool &started,
+            Ball &ball, MovingBlock &paddle,
+            Brick bricks[BRICK_ROWS][BRICK_COLUMNS],
+            Borders walls, float delta) {
+    bool gameOver = false;
 
     // adjust velocity directions for user input
     if (input) {
         switch (input) {
             case Left:
-                paddle.block_velocityX -= PADDLE_SPEED;
+                paddle.velocityX -= PADDLE_SPEED;
                 break;
             case Right:
-                paddle.block_velocityX += PADDLE_SPEED;
+                paddle.velocityX += PADDLE_SPEED;
                 break;
             case Start:
                 if (!started) {
                     ball.velocityX = BALL_SPEED_X;
-                    ball.velocityY = BALL_SPEED_Y * -1;     //begin moving upwards
-
-                   /**
-                    * randomly set horizontal velocity to positive or negative
-                    by seeing if the tenths place of current delta
-                    (i.e. 1st digit after the decimal) is odd or even.
-                    **/
+                    ball.velocityY = BALL_SPEED_Y * -1;
+                    /* randomly set horizontal velocity to positive or negative
+                       by seeing if the tenths place of current delta
+                       (i.e. 1st digit after the decimal) is odd or even.  */
                     if ((int(delta * 10) & 1) % 2) {
                         ball.velocityX *= -1;  // ball goes left if odd
                     }
-
                     started = true;
                 }
-                break;
-            case None:
-                break;
         }
         // clear input
         input = None;
     }
-    //adjust location of paddle
-    paddle.block.left += paddle.block_velocityX * delta;         //only need to update left since its only left/right
+
+    // adjust the location of the ball for speed * time
+    paddle.block.left += paddle.velocityX * delta;
 
     if (started) {
         // adjust the location of the ball for speed * time
         ball.coordinateX += ball.velocityX * delta;
         ball.coordinateY += ball.velocityY * delta;
-    } else {
-        ball.coordinateX = paddle.block.left + (PADDLE_WIDTH / 2.0);
-        ball.coordinateY = paddle.block.top - BALL_RADIUS - 1;
+    }
+    else { // not started yet
+        // adjust location of ball relative to the paddle
+        ball.coordinateX = paddle.block.left + paddle.block.width / 2.0;
+        ball.coordinateY = paddle.block.top - ball.radius - 1;
     }
 
-    game_over = doCollisionChecks(ball, paddle, border, theBricks);
+    gameOver = doCollisionChecks(ball, paddle, bricks, walls);
 
-    return game_over;
+    return gameOver;
 } // end update
 
-bool doCollisionChecks(Ball &ball, MovingBlock &paddle, Borders &border, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS]) {
+void updatePoints(int points) {
+    std::string ttotal = pointTotal.getString();
+    int total = std::stoi(ttotal);
 
-    bool game_over = false;
-    //Check if there was a collision for each of the walls
-    // --- check vertical collisions ---
-    if (!checkCollision(&ball, &paddle.block)) {
-        if (!checkCollision(&ball, &border.top_wall)) {
-            game_over = checkCollision(&ball, &border.bottom_wall);
-        }
-    }
-    // --- check horizontal collisions ---
-    if (!checkCollision(&ball, &border.left_wall)) {
-        checkCollision(&ball, &border.right_wall);
-    }
-
-    if (checkBlockCollision(paddle.block, border.left_wall)) {
-        paddle.block_velocityX = 0.0;
-        paddle.block.left = border.left_wall.left + border.left_wall.width + 1.0;
-    } else if (checkBlockCollision(paddle.block, border.right_wall)) {
-        paddle.block_velocityX = 0.0;
-        paddle.block.left = border.right_wall.left - paddle.block.width - 1.0;
-    }
-
-    Brick *pBrick = &theBricks[0][0];
-    for (int row = 0; row < BRICK_ROWS; row++) {
-        for (int column = 0; column < BRICK_COLUMNS; column++) {
-            if (!pBrick->hit) {
-                pBrick->hit = checkCollision(&ball, &pBrick->block);
-            }
-            pBrick++;
-        } //columns
-    } //rows
-
-    return game_over;
-}
-
-
-/**
- * calculates the current position of the ball relative to a wall, if it detecs there was a collision, it returns
- * the cardinal degree angle of collision.
- *
- * @author TM
- * @param pBall - pointing to ball for it's coordinates, velocities & radius
- * @param pBlock - pointing to the wall being passed for it dimensions
- * @return int - returns the cardinal degree equivalent of current collision angle,
- *               used to determine which direction to send the ball after collision.
- */
-int getCollisionPoint(Ball* pBall, Block* pBlock) {
-
-    //Define some local variables to assign the temporary positions, further processing done later.
-
-    int cardinal_heading = 0;
-
-    double check_x;
-    double check_y;
-
-    //Checks if top/bottom wall is hit
-    if (pBall->radius < pBlock->left) {
-        check_x = pBlock->left;
-    } else if (pBall->radius > (pBlock->left + pBlock->width)) {
-        check_x = pBlock->left + pBlock->width;
-    } else {
-        check_x = pBall->coordinateX;
-    }
-
-    //Checks if left/right wall is hit
-    if (pBall->radius < pBlock->top) {
-        check_y = pBlock->top;
-    } else if (pBall->radius > (pBlock->top + pBlock->height)) {
-        check_y = pBlock->top + pBlock->height;
-    } else {
-        check_y = pBall->coordinateY;
-    }
-
-    //Calculate the difference between the temp position & actual, if it's less than the radius, a collision occurred
-    int diffX = check_x - pBall->coordinateX;
-    int diffY = (WINDOW_HEIGHT - check_y) - (WINDOW_HEIGHT - pBall->coordinateY);
-
-    double distance = std::sqrt(pow(diffX, 2.0) + pow(diffY,2.0));
-
-    if (distance <= pBall->radius) {
-        double theta = std::atan2(diffY, diffX);
-        double degrees = 90.0 - theta * 180 / M_PI;
-
-        //Handle negative degrees
-        if (degrees <= 0) {
-            degrees += 360;
-        }
-        cardinal_heading = int(degrees);
-    }
-
-    return cardinal_heading;
-}
-
-/**
- * Checks if a collision was detected, if it was, it adjusts the balls position & velocities accordingly
- *
- * @author TM
- *
- * @param pBall - pointing to ball for it's coordinates, velocities & radius
- * @param pBlock - pointing to the wall being passed for it dimensions
- * @return bool - false if no collision, true if there was a collision
- */
-bool checkCollision(Ball* pBall, Block* pBlock) {
-
-    //Assign return variable
-    bool collision = false;
-
-    int result = getCollisionPoint(pBall, pBlock);
-    if (result) {
-        collision = true;
-
-        //Horizontal collisions
-        if (result > 255 && result < 315) {
-            pBall->velocityX *= -1;
-            pBall->coordinateX = (pBlock->left + pBlock->width + pBall->radius + 1);
-        } else if (result > 45 && result < 135) {
-            pBall->velocityX *= -1;
-            pBall->coordinateX = (pBlock->left - pBall->radius - 1);
-        }
-
-        //Vertical collisions
-        if (result >= 315 || result <= 45) {
-            pBall->velocityY *= -1;
-            pBall->coordinateY = (pBlock->top + pBlock->height + pBall->radius + 1);
-        } else if (result >= 135 && result <= 225) {
-            pBall->velocityY *= -1;
-            pBall->coordinateY = (pBlock->top - pBall->radius - 1);
-        }
-    }
-
-    return collision;
-}
-
-bool checkBlockCollision(Block moving, Block stationary) {
-
-    //Assign return variable
-    bool collision = false;
-
-    if (moving.left < stationary.left + stationary.width &&
-    moving.left + moving.width > stationary.left &&
-    moving.top < stationary.top + stationary.height &&
-    moving.top + moving.height > stationary.top)
-    {
-        collision = true;
-    }
-    return collision;
+    total += points;
+    pointTotal.setString(std::to_string(total));
 }
 
 /**
  * draw the ball on the graphics window
- *
  * @param window - handle to open graphics window
  * @param ball   - structure variable with properties for the ball
- * @param paddle - the player's paddle they're controlling left/right
+ * @param paddle - player paddle
  * @param delta  - amount of frame time plus lag (in ms)
  */
-void render(sf::RenderWindow &window, Ball ball, Borders border, Brick theBricks[BRICK_ROWS][BRICK_COLUMNS], MovingBlock paddle, float delta) {
+void render(sf::RenderWindow &window, Ball ball, MovingBlock paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders walls, float delta) {
     // Render drawing objects
     // ------------------------------------------------
     // clear the window with the background color
     window.clear(WINDOW_COLOR);
 
-    //draw borders
-    window.draw(border.bottom_wall.rectangle);
-    window.draw(border.right_wall.rectangle);
-    window.draw(border.top_wall.rectangle);
-    window.draw(border.left_wall.rectangle);
-
-    // draw the ball
-    // ------------------------------------------------
+    // --- draw the ball ---
     sf::CircleShape circle;
     circle.setFillColor(ball.color);
     circle.setRadius(ball.radius);
     // set screen coordinates relative to the center of the circle
     circle.setOrigin(ball.radius, ball.radius);
     // calculate current drawing location relative to speed and frame-time
-    float xPosition = ball.coordinateX + ball.velocityX * delta;
-    float yPosition = ball.coordinateY + ball.velocityY * delta;
-    circle.setPosition(xPosition, yPosition);
+    ball.coordinateX += ball.velocityX * delta;
+    ball.coordinateY += ball.velocityY * delta;
+    circle.setPosition(ball.coordinateX, ball.coordinateY);
     window.draw(circle);
 
-    // draw the paddle
-    // ------------------------------------------------
-    paddle.block.left += paddle.block_velocityX * delta;         // x-coord of paddle
-    paddle.block.top += paddle.block_velocityY * delta;          // y-coord of paddle
+    // -- draw the player paddle ---
+    paddle.block.left += paddle.velocityX * delta;
+    paddle.block.top += paddle.velocityY * delta;
     paddle.block.rectangle.setPosition(paddle.block.left, paddle.block.top);
     window.draw(paddle.block.rectangle);
 
-    Brick *pBrick = &theBricks[0][0];
+    Brick *pBrick = &bricks[0][0];
     for (int row = 0; row < BRICK_ROWS; row++) {
         for (int column = 0; column < BRICK_COLUMNS; column++) {
             if (!pBrick->hit) {
@@ -528,12 +378,186 @@ void render(sf::RenderWindow &window, Ball ball, Borders border, Brick theBricks
                 blockPointsText.setPosition(pBrick->block.left + (pBrick->block.width / 2), pBrick->block.top);
 
                 window.draw(blockPointsText);
+
+                window.draw(pointTotal);
             }
             pBrick++;
-        } //columns
-    } //rows
+        } // columns
+    } // rows
+
+    // --- draw the walls ---
+    window.draw(walls.leftWall.rectangle);
+    window.draw(walls.topWall.rectangle);
+    window.draw(walls.rightWall.rectangle);
+    window.draw(walls.bottomWall.rectangle);
 
     // show the new window
     // ------------------------------------------------
     window.display();
 } // end render
+
+
+
+/**
+ * check for collision between game objects
+ * @param ball   - the moving ball
+ * @param paddle - the player's paddle
+ * @param bricks - the rack of bricks
+ * @param walls  - border walls
+ * @return bool  - true if the ball hit the bottom wall (gameover)
+ */
+bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders walls) {
+    bool gameOver = false;
+
+    // --- check vertical collisions ---
+    if (!collisionCheck(&ball, &paddle.block)) {
+        if (!collisionCheck(&ball, &walls.topWall)) {
+            gameOver = collisionCheck(&ball, &walls.bottomWall);
+        }
+    }
+
+    // --- check horizontal collisions ---
+    if (!collisionCheck(&ball, &walls.leftWall)) {
+        collisionCheck(&ball, &walls.rightWall);
+    }
+
+    if (checkBlockCollision(paddle.block, walls.leftWall)) {
+        paddle.velocityX = 0.0;
+        paddle.block.left = walls.leftWall.left + walls.leftWall.width + 1.0;
+    }
+    else if (checkBlockCollision(paddle.block, walls.rightWall)) {
+        paddle.velocityX = 0.0;
+        paddle.block.left = walls.rightWall.left - paddle.block.width - 1.0;
+    }
+
+    Brick *pBrick = &bricks[0][0];
+    for (int row = 0; row < BRICK_ROWS; row++) {
+        for (int column = 0; column < BRICK_COLUMNS; column++) {
+            if (!pBrick->hit) {
+                pBrick->hit = collisionCheck(&ball, &pBrick->block);
+
+                if (pBrick->hit) {
+                    updatePoints(pBrick->points);
+                }
+            }
+            pBrick++;
+        } // columns
+    } // rows
+
+    return gameOver;
+}
+
+// doCollisionChecks
+bool collisionCheck(Ball* pBall, Block* pBlock) {
+    bool collision = false;
+
+    int collided = getCollisionPoint(pBall, pBlock);
+
+    if (collided) {
+        collision = true;
+
+        // horizontal collisions - invert X coordinate
+        // --------------------------------------
+        // -- collision left ---
+        if (collided > 225 && collided < 315) {
+            pBall->velocityX *= -1;
+            // collided left, move it right
+            pBall->coordinateX = pBlock->left + pBlock->width + pBall->radius + 1;
+        }
+            // -- collision right ---
+        else if (collided > 45 && collided < 135) {
+            pBall->velocityX *= -1;
+            // collided right, move it left
+            pBall->coordinateX = pBlock->left - pBall->radius - 1;
+        }
+
+        // vertical collisions - invert Y coordinate
+        // --------------------------------------
+        // -- collision top ---
+        if (collided >= 315 || collided <= 45) {
+            pBall->velocityY *= -1;
+            // collided top, move it down
+            pBall->coordinateY = pBlock->top + pBlock->height + pBall->radius + 1;
+        }
+            // -- collision bottom ---
+        else if (collided >= 135 && collided <= 225) {
+            pBall->velocityY *= -1;
+            // collided bottom, move it up
+            pBall->coordinateY = pBlock->top - pBall->radius - 1;
+        }
+
+    } // distance less than radius
+
+    return collision;
+} // end collisionCheck
+
+
+/**
+ * calculate the cardinal point on outside of the ball's
+ * circumstance that the collision with the block occured
+ * and a block
+ * @param pBall - center origin of the ball and radius
+ * @param pBlock - (x,y) location of block with width and height
+ * @return - int cardinal point on outside of circle arc that collision occured
+ */
+int getCollisionPoint(Ball* pBall, Block* pBlock) {
+    int point = 0;
+
+    float checkX, checkY;
+
+    // --- pBall left ---
+    if (pBall->coordinateX < pBlock->left)
+        checkX = pBlock->left;
+        // --- pBall right ---
+    else if (pBall->coordinateX > pBlock->left + pBlock->width)
+        checkX = pBlock->left + pBlock->width;
+        // --- pBall between ---
+    else
+        checkX = pBall->coordinateX;
+
+    // --- pBall above ---
+    if (pBall->coordinateY < pBlock->top) // inverted Y
+        checkY = pBlock->top;
+        // --- pBall below ---
+    else if (pBall->coordinateY > pBlock->top + pBlock->height) // inverted Y
+        checkY = pBlock->top + pBlock->height;
+        // --- pBall between ---
+    else
+        checkY = pBall->coordinateY;
+
+    // find difference between check (x,y) and pBall (x,y)
+    double diffX = checkX - pBall->coordinateX;
+    double diffY = (WINDOW_HEIGHT - checkY) - (WINDOW_HEIGHT - pBall->coordinateY);
+
+    // calculate linear distance using Pythagorean Theorem
+    double distance = std::sqrt(pow(diffX, 2.0) + pow(diffY, 2.0));
+
+    if (distance <= pBall->radius) {
+
+        // calculate the arc-tangent of the slope
+        double theta = std::atan2(diffY, diffX);
+
+        // convert this to cardinal degrees
+        double degrees = 90.0 - theta * 180.0 / M_PI;
+        if (degrees <= 0)
+            degrees += 360;
+
+        point = int(degrees);
+    }
+
+    return point;
+} // end getCollisionPoint
+
+
+bool checkBlockCollision(Block moving, Block stationary) {
+    bool collision = false;
+
+    if (moving.left < stationary.left + stationary.width &&
+        moving.left + moving.width > stationary.left &&
+        moving.top < stationary.top + stationary.height &&
+        moving.top + moving.height > stationary.top) {
+        collision = true;
+    }
+
+    return collision;
+}
