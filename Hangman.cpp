@@ -613,6 +613,7 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     loseText.setStyle(sf::Text::Bold);
     loseText.setPosition(625,25);
 
+    /* Kept to help development
     sf::Text uLetter;//for development purposes
     uLetter.setString(userInput);
     uLetter.setFont(textFont);
@@ -626,6 +627,7 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     gameWord.setCharacterSize(40);
     gameWord.setStyle(sf::Text::Bold);
     gameWord.setPosition(12,800);
+    */
 
     sf::Text lengthText; // tells user how many letters the word they are trying to guess is
     lengthText.setString("Number of letters in word: " );
@@ -647,8 +649,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     switch(userLives){
         case 7:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord); //all cases have for dev purposes
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -673,8 +675,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 6:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -705,8 +707,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 5:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -738,8 +740,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 4:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -772,8 +774,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 3:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -807,8 +809,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 2:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -843,8 +845,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 1:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordLength);
             window.draw(lengthText);
@@ -878,8 +880,8 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         case 0:
             window.clear();
-            window.draw(gameWord);
-            window.draw(uLetter);
+            //window.draw(gameWord);
+            //window.draw(uLetter);
 
             window.draw(wordBank);
             window.draw(bankText);
@@ -906,7 +908,7 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
 
         default:
             window.clear();
-            window.draw(gameWord);
+            //window.draw(gameWord);
 
             window.draw(wordBank);
             window.draw(bankText);
