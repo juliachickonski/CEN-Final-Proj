@@ -17,9 +17,10 @@ int main() {
 
         while (window.pollEvent(event))
         {
+            window.setKeyRepeatEnabled(false);
             switch (event.type)
             {
-                case sf::Event::KeyReleased:
+                case sf::Event::KeyPressed:
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Up:

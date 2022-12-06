@@ -403,8 +403,7 @@ void hangman(sf::RenderWindow &window) {
                                     gameTime(word,window);
                                     break;
                                 case 3:
-                                    window.close();
-                                    break;
+                                    return;
                             }
                             break;
                     }
