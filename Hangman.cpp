@@ -345,6 +345,8 @@ void gameTime(const string& word,sf::RenderWindow &window){
                                         }
                                         //render(window, userLife, word, userInput, len, userArray, win);
                                         break;
+                                 case sf::Keyboard::Return:
+                                     hangman(window);
                                 }
                if (livesCounter == lastCount) {
                    userLife--;
@@ -373,9 +375,10 @@ void hangman(sf::RenderWindow &window) {
     while (window.isOpen()) {
         while (window.pollEvent(event))
         {
+            window.setKeyRepeatEnabled(false);
             switch (event.type)
             {
-                case sf::Event::KeyReleased:
+                case sf::Event::KeyPressed:
                     switch (event.key.code)
                     {
                         case sf::Keyboard::Up:
@@ -390,6 +393,7 @@ void hangman(sf::RenderWindow &window) {
                                 case 0:
                                     word = easy();
                                     gameTime(word,window);
+                                    break;
                                 case 1:
                                     word = medium();
                                     gameTime(word,window);
@@ -596,11 +600,11 @@ void render(sf::RenderWindow &window, int userLives , const string& gWord, char 
     rArm.setPosition(732,388);
 
     sf::Text winText;
-    winText.setString("\t\tYou Win! \nPress enter to continue.");
+    winText.setString("\t\t\tYou Win! \nPress enter to return to Menu.");
     winText.setFont(textFont);
     winText.setCharacterSize(50);
     winText.setStyle(sf::Text::Bold);
-    winText.setPosition(750,25);
+    winText.setPosition(625,25);
 
     sf::Text loseText;
     loseText.setString("\t\t\tYou Loose :( \nPress enter to return to Menu.");

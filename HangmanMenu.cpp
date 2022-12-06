@@ -13,19 +13,19 @@ HangmanMenu::HangmanMenu(float width, float height) {
     //first menu item
     menu[0].setFont(font);
     menu[0].setFillColor(sf::Color::Red);
-    menu[0].setString("Easy");
+    menu[0].setString("Easy: Animals");
     menu[0].setPosition(sf::Vector2f(width /2,  height / (MAXIMUM_MENU_ITEMS + 1) * 1 ));
 
     //second menu item
     menu[1].setFont(font);
     menu[1].setFillColor(sf::Color::White);
-    menu[1].setString("Medium: One hint");
+    menu[1].setString("Medium: Videogame Villains");
     menu[1].setPosition(sf::Vector2f(width /2,  height / (MAXIMUM_MENU_ITEMS + 1) * 2 ));
 
     //third menu item
     menu[2].setFont(font);
     menu[2].setFillColor(sf::Color::White);
-    menu[2].setString("Hard--No Hints");
+    menu[2].setString("Hard: Random Words");
     menu[2].setPosition(sf::Vector2f(width /2,  height / (MAXIMUM_MENU_ITEMS + 1) * 3 ));
 
     //quit Hangman menu option
