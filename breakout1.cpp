@@ -9,11 +9,13 @@
  * -------------------------------------------------------- */
 #include <iostream>
 #include <cmath>
+#include <string>
 #include "breakout_defs.h"
+#include "menu.h"
 
 // Function declarations (prototypes)
 // --------------------------------------------------------
-void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls);
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText);
 Direction processInput() ;
 bool update(Direction &input, bool &started,
             Ball &ball, MovingBlock &paddle,
@@ -24,20 +26,29 @@ bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS]
 bool collisionCheck(Ball* pBall, Block* pBlock);
 int getCollisionPoint(Ball* pBall, Block* pBlock);
 bool checkBlockCollision(Block moving, Block stationary);
+void updatePoints(int points);
 
+sf::Text blockPointsText;
+sf::Text pointTotal;
+sf::Font blockPointsTextFont;
 
 /**
  * The main application
  * @return OS stats message (0=Success)
  */
 void breakout(sf::RenderWindow &window) {
+    pointTotal.setString('0');
+    pointTotal.setFont(blockPointsTextFont);
+    pointTotal.setCharacterSize(40);
+    pointTotal.setFillColor(sf::Color::White);
+    pointTotal.setPosition(100, 100);
 
     // declare a ball variable and populate it in the center of the window
     Ball theBall;
     MovingBlock thePaddle;
     Borders theWalls;
     Brick theBricks[BRICK_ROWS][BRICK_COLUMNS];
-    setup(theBall, thePaddle, theBricks, theWalls);
+    setup(theBall, thePaddle, theBricks, theWalls, blockPointsText);
 
 
     // timing variables for the main game loop
@@ -99,7 +110,19 @@ void breakout(sf::RenderWindow &window) {
  * @param paddle - player paddle
  * @param walls - set border walls
  */
-void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls) {
+void setup(Ball &ball, MovingBlock &paddle, Brick bricks[BRICK_ROWS][BRICK_COLUMNS], Borders &walls, sf::Text &blockPointsText) {
+
+    //points text initial setup (point values assigned in render)
+    if(!blockPointsTextFont.loadFromFile("../arial.ttf")) //windows
+    {
+        if(!blockPointsTextFont.loadFromFile("arial.ttf")) //mac
+        {
+
+        }
+    }
+    blockPointsText.setFont(blockPointsTextFont);
+    blockPointsText.setCharacterSize(15);
+    blockPointsText.setFillColor(sf::Color::Black);
 
     // --- init border walls ---
     walls.leftWall.left = 0.0;
@@ -305,6 +328,13 @@ bool update(Direction &input, bool &started,
     return gameOver;
 } // end update
 
+void updatePoints(int points) {
+    std::string ttotal = pointTotal.getString();
+    int total = std::stoi(ttotal);
+
+    total += points;
+    pointTotal.setString(std::to_string(total));
+}
 
 /**
  * draw the ball on the graphics window
@@ -342,6 +372,14 @@ void render(sf::RenderWindow &window, Ball ball, MovingBlock paddle, Brick brick
         for (int column = 0; column < BRICK_COLUMNS; column++) {
             if (!pBrick->hit) {
                 window.draw(pBrick->block.rectangle);
+
+                std::string ss = std::to_string(pBrick->points);
+                blockPointsText.setString(ss);
+                blockPointsText.setPosition(pBrick->block.left + (pBrick->block.width / 2), pBrick->block.top);
+
+                window.draw(blockPointsText);
+
+                window.draw(pointTotal);
             }
             pBrick++;
         } // columns
@@ -397,14 +435,19 @@ bool doCollisionChecks(Ball &ball, MovingBlock& paddle, Brick bricks[BRICK_ROWS]
         for (int column = 0; column < BRICK_COLUMNS; column++) {
             if (!pBrick->hit) {
                 pBrick->hit = collisionCheck(&ball, &pBrick->block);
+
+                if (pBrick->hit) {
+                    updatePoints(pBrick->points);
+                }
             }
             pBrick++;
         } // columns
     } // rows
 
     return gameOver;
-} // doCollisionChecks
+}
 
+// doCollisionChecks
 bool collisionCheck(Ball* pBall, Block* pBlock) {
     bool collision = false;
 
