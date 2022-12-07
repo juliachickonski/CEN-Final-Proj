@@ -2,13 +2,13 @@
 
 _Alpha v.2.0_
 
-A program that features different type of mini games. Games featured in this version:
-* Hangman
+A program that features different type of classic mini-games. Games featured in this version:
 * Breakout
+* Hangman
 
 ## Description
 
-This project compiles three popular minigames: Tic-Tac-Toe, Hangman, and Dodger, into a short series for a quick & fun play session. We've used C++ & the SFML visual library to achieve this. By using the agile development cycle, the team has devised a system to use good programing practices by using comments effectivly and efficiently within the C++ code of this project.
+This project compiles two popular minigames: Breakout and Hangman into a short series for a quick & fun play session. We've used C++ & the SFML visual library to achieve this. By using the **agile development cycle**, the team has devised a system to use good programing practices by using comments effectivly and efficiently within the C++ code of this project.
 
 
 ## Getting Started 
@@ -16,15 +16,13 @@ This project compiles three popular minigames: Tic-Tac-Toe, Hangman, and Dodger,
 * Import the C++ Code into an IDE with a C++ Complier (we used CLion).
 * Once files are imported, run the code. A console should pop-up featuring a menu. 
 *In the menu, using the arrow keys, navigate to what option you want.
-** Hangman - a game in which one player tries to guess the letters of a word, and failed attempts are recorded.
-** Breakout - a game that contains a layer of bricks represented by lines the top and the goal is to destroy them all by repeatedly bouncing a ball off a paddle into them.
+  * ** Hangman** - a game in which one player tries to guess the letters of a word, and failed attempts are recorded.
+  * ** Breakout** - a game that contains a layer of bricks represented by lines the top and the goal is to destroy them all by repeatedly bouncing a ball off     a paddle into them.
 
 ### Dependencies
 
 * C++ Compiler
-
-
-
+* [SFML](sfml-dev.org)
 
 ### Installing
 
@@ -105,11 +103,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
