@@ -1,6 +1,6 @@
 # Minigamers - CEN 3031 Project 
 
-_Alpha v.2.0_
+_Beta v.2.0_
 
 A program that features different type of classic mini-games. Games featured in this version:
 * Breakout
