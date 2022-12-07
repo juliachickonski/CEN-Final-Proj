@@ -1,37 +1,19 @@
 # Hangman User Manual 
 
+Version 2.0
 
 ## Getting Started
 
-In 5 simple steps:  
-1. Clone/download the repository and open it in Unity 2019.3 or later.  
-2. Open the Sample Scene and set the output video resolution by changing the Game View resolution (use 1920x1080 for the xample scene).  
-3. Open the Timeline window and select the 'Global Timeline' object.  
-4. Enter Playmode to watch the video play. The output is recorded during the 'RecorderClip' within timeline.  
-5. Open the 'Recordings' folder which will be created in the project directory and will contain the exported video.  
+In 6 simple steps:  
+1. Run the program downloaded from the repository.  
+2. When the menu opens, using your arrow keys to navigate, click 'Play Hangman' from the list of options.  
+3. There will now be 3 difficulty options to choose from, simply pick one to begin. 
+4. You'll now be shown the hangman environment, where you can begin 'guessing' the word by pressing a letter key on your keyboard (no need to click `enter`).
+5. As you go, used letters will be put into the wordbank, and you can continue guessing new letters to complete the word. 
+6. Once completed or failed, you can click `Enter` to go back to the hangman menu when prompted. 
   
 
 ## Tips
 
-1. The project includes a 'Welcome' window to help get you setup. It can also be accessed through the Top Menu Bar.  
-2. Use Timeline! It makes everything much easier. Plus the included modifications to fix VideoPlayer bugs are only designed for use with Timeline.  
-3. All video clips you use should have 'Transcode' checked in their import settings. This will prevent delays on videos starting to play.  
-4. Don't worry about dropping frames. Unity Recorder won't let that happen. So you can export your videos on lower-end devices if you want. The export process will take longer but you won't lose quality.  
-5. Use TextMeshPro for all text you use to make sure it is crystal clear. The project includes some popular fonts which are ready to use from [Google Fonts](https://fonts.google.com/).
-6. Don't start recording as soon as you enter playmode! In Timeline leave a few seconds before the RecorderClip starts (just like in the sample scene). This is important because some video thrumbnail processing is done in the first second when you enter Playmode.
-
-
-## References
-
- 
-
-## License
-
-This code is released under MIT license. Modify, distribute, sell, fork, and use this as much as you like. Both for personal and commercial use. We hold no responsibility if anything goes wrong.
-
-
-## Contributing
-
-Pull Requests are welcome. But, note that by creating a pull request you are giving me permission to merge your code and release it under the MIT license mentioned above. At no point will you be able to withdraw merged code from the repository, or change the license under which it has been made available.
-
-
+1. The hangman difficulty drastically changes how each wrong letter effects your lives, so be sparing and take your time to think of the right word.
+2. Use the hints given in the menu to focus into one category (Animals, etc). 
