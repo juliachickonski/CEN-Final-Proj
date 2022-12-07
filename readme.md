@@ -22,7 +22,7 @@ This project compiles two popular minigames: Breakout and Hangman into a short s
 ### Dependencies
 
 * C++ Compiler
-* [SFML](sfml-dev.org)
+* [SFML](sfml-dev.org) 2.5.1
 
 ### Installing
 
@@ -35,18 +35,6 @@ Mac:
 - Install the files into your IDE, along with SFML libraries
 - ***If m1 mac** -* Alter the CMAKE to change x64 to x86 compile support
 - Run the minigame
-
-
-### Executing program
-
-
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
 
 ## Authors
 
