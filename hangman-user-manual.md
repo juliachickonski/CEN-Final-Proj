@@ -15,5 +15,5 @@ In 6 simple steps:
 
 ## Tips
 
-1. The hangman difficulty drastically changes how each wrong letter effects your lives, so be sparing and take your time to think of the right word.
+1. The hangman difficulty drastically changes how long each word is, so be sparing and take your time to think of the right word.
 2. Use the hints given in the menu to focus into one category (Animals, etc). 
